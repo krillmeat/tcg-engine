@@ -1,0 +1,19 @@
+{
+  "name": "tcg-engine",
+  "version": "1.0.0",
+  "description": "making a web app to play card games",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krillmeat/tcg-engine.git"
+  },
+  "author": "ross conover",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/krillmeat/tcg-engine/issues"
+  },
+  "homepage": "https://github.com/krillmeat/tcg-engine#readme"
+}
