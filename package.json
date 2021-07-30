@@ -4,6 +4,7 @@
   "description": "making a web app to play card games",
   "main": "index.js",
   "scripts": {
+    "start": "node app.js",
     "test": "test"
   },
   "repository": {

@@ -1,5 +1,8 @@
+// Write Javascript code here
+ 
 var http = require('http');
 var fs = require('fs'); // to get data from html file
+ 
  
 http.createServer(function (req, res) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -7,10 +10,10 @@ http.createServer(function (req, res) {
     // req.url stores the path in the url
     var url = req.url;
     if (url === "/") {
-// fs.readFile looks for the HTML file
-// the first parameter is the path to the HTML page
+// fs.readFile looks for the html file
+// the first parameter is the path to the html page
 // the second is the call back function
-// if no file is found the function gives an error
+// if no file is found the function gives an err
 // if the file is successfully found, the content of the file are contained in pgres
         fs.readFile("head.html", function (err, pgres) {
             if (err)
@@ -36,7 +39,7 @@ http.createServer(function (req, res) {
             }
         });
     }
-    
-}).listen(3000, function () {
+ 
+}).listen(process.env.PORT || 3000, function () {
     console.log("SERVER STARTED PORT: 3000");
 });
