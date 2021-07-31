@@ -12,11 +12,11 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npm run build && (cd utils && npm run start)",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start:ws": "npm run build && (cd utils && npm run start)"
+    "start:client": "react-scripts start"
   },
   "eslintConfig": {
     "extends": [
