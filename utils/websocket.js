@@ -51,10 +51,16 @@ const webSocketServer = new WebSocket.Server({server: http});
 webSocketServer.on('connnection', function connection(ws) {
   ws.on('message', function incoming(data) {
     webSocketServer.clients.forEach(function each(client) {
+      console.log("CLIENT = ",client);
       if(client !== ws && client.readyState === WebSocket.OPEN){
-        console.log("CLIENT = ",client);
         client.send(data);
       }
     })
   })
+});
+
+window.addEventListener('keydown', e =>{
+  if(e.key === 'p'){
+    console.log("P!");
+  } else{ console.log(e.key); }
 })
