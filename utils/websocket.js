@@ -36,9 +36,6 @@ const path = require('path');
 var http = require('http').createServer(app);
 const WebSocket = require('ws');
 
-// app.get('/', function (req, res) {
-//   res.sendFile(path.join(__dirname, '../src', 'index.js'));
-// });
 app.use(express.static(path.join(__dirname,"..","build")));
 
 http.listen(process.env.PORT || 5000, function() {
@@ -47,11 +44,16 @@ http.listen(process.env.PORT || 5000, function() {
   console.log('App listening at http://%s:%s', host, port)
 });
 
+let connections = [];
+
 const webSocketServer = new WebSocket.Server({server: http});
+
 webSocketServer.on('connnection', function connection(ws) {
+  ws.on('request', (request) => {
+    console.log(request.origin);
+  });
   ws.on('message', function incoming(data) {
     webSocketServer.clients.forEach(function each(client) {
-      console.log("CLIENT = ",client);
       if(client !== ws && client.readyState === WebSocket.OPEN){
         client.send(data);
       }
