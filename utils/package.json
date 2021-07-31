@@ -1,0 +1,11 @@
+{
+  "name": "websocket",
+  "version": "1.0.0",
+  "description": "websocket for my game",
+  "main": "websocket.js",
+  "scripts": {
+    "start": "node websocket.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
