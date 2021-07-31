@@ -58,9 +58,3 @@ webSocketServer.on('connnection', function connection(ws) {
     })
   })
 });
-
-window.addEventListener('keydown', e =>{
-  if(e.key === 'p'){
-    console.log("P!");
-  } else{ console.log(e.key); }
-})
