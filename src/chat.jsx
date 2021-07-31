@@ -2,7 +2,7 @@ import React,{useEffect, useState} from 'react';
 import ChatInput from './chat-input';
 import ChatMessage from './chat-message';
 
-const URL = 'ws://tcg-engine.herokuapp.com';
+const URL = 'wss://tcg-engine.herokuapp.com';
 
 const Chat = () => {
 
