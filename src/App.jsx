@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import './App.css';
-import Chat from './chat';
 import LoginPrompt from './login/login-prompt';
 import Game from './game/game';
 

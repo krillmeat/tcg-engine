@@ -1,5 +1,8 @@
 import React,{useEffect, useState} from 'react';
-import Card from './components/card';
+// import Card from './components/card';
+import Field from './components/field';
+
+import {buildInitialGameState} from './utils/game-state';
 
 const URL = 'wss://tcg-engine.herokuapp.com';
 // const URL = 'ws://localhost:5000';
@@ -9,6 +12,8 @@ const Game = props => {
   const {username} = props;
   let wsSetup = new WebSocket(URL);
   const [ws, setWS] = useState(wsSetup);
+
+  const [gameState, setGameState] = useState(buildInitialGameState());
 
   useEffect(() => {
     console.log("WS",ws);
@@ -22,7 +27,7 @@ const Game = props => {
     const action = JSON.parse(e.data);
     console.log("RECEIVE STATE UPDATE: ",action);
     if(action.actionName==='fake-add-card'){
-      setFakeCardList(['ST1-01',...fakeCardList]);
+      setFakeCardList([action.actionParams[0],...fakeCardList]);
     }
   }
 
@@ -31,18 +36,22 @@ const Game = props => {
   return (
     <div>
       <h1>Game time for {username}</h1>
-      {fakeCardList.map((setNumber, index) =>
+      <Field/>
+            {/* {fakeCardList.map((setNumber, index) =>
       <Card
         key={index}
         setNumber={setNumber}/>
-      )}
-      <button onClick={() => {
+      )} */}
+      {/* <button onClick={() => {
         setFakeCardList(['ST1-01',...fakeCardList]);
         ws.send(JSON.stringify({
           actionName: 'fake-add-card',
+          actionParams: [
+            'ST1-01'
+          ],
           actionSender: username
         }));
-      }}>Add Card</button>
+      }}>Add Card</button> */}
     </div>
   )
 };
