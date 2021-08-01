@@ -7,6 +7,9 @@ const validate = (username, password) => {
     case 'krillmeat':
       if(password == 'haldo')
         return true;
+    case 'tester':
+      if(password == 'a')
+        return true;
     default:
         return false;
   }
