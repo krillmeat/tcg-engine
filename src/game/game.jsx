@@ -1,8 +1,8 @@
 import React,{useEffect, useState} from 'react';
 import Card from './components/card';
 
-const URL = 'wss://tcg-engine.herokuapp.com';
-// const URL = 'ws://localhost:5000';
+// const URL = 'wss://tcg-engine.herokuapp.com';
+const URL = 'ws://localhost:5000';
 
 const Game = props => {
 
@@ -21,6 +21,9 @@ const Game = props => {
   ws.onmessage = e => {
     const action = JSON.parse(e.data);
     console.log("RECEIVE STATE UPDATE: ",action);
+    if(action.actionName==='fake-add-card'){
+      setFakeCardList(['ST1-01',...fakeCardList]);
+    }
   }
 
   const [fakeCardList, setFakeCardList] = useState(["ST1-01"]);

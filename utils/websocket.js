@@ -17,7 +17,6 @@ http.listen(process.env.PORT || 5000, function() {
 let webSocketServer = new WebSocket.Server({server: http});
 
 webSocketServer.on('connection', function(ws){
-  console.log("CONNECTION ESTABLISHED = ",ws);
   CLIENTS.push(ws);
   
   ws.on('message',function(message) {
