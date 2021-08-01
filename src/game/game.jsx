@@ -19,7 +19,8 @@ const Game = props => {
   }, [ws]);
 
   ws.onmessage = e => {
-    console.log("RECEIVE STATE UPDATE: ");
+    const action = JSON.parse(e.data);
+    console.log("RECEIVE STATE UPDATE: ",action);
   }
 
   const [fakeCardList, setFakeCardList] = useState(["ST1-01"]);
