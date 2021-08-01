@@ -1,40 +1,9 @@
-// const WebSocket = require('ws');
-
-// const PORT = 5000;
-
-// const webSocketServer = new WebSocket.Server({port: PORT});
-
-// webSocketServer.on('connnection', function connection(ws) {
-//   ws.on('message', function incoming(data) {
-//     webSocketServer.clients.forEach(function each(client) {
-//       if(client !== ws && client.readyState === WebSocket.OPEN){
-//         client.send(data);
-//       }
-//     })
-//   })
-// })
-
-
-// // CONNECT REACT APP
-
-// const express = require('express');
-// const path = require('path');
-
-// const app = express();
-
-// app.use(express.static(path.join(__dirname, '../src')));
-
-// app.get('*', (req,res) => {
-//   res.sendFile(path.join(__dirname+'../src/index.js'));
-// });
-
-// app.listen(PORT);
-
 var express = require('express');
 var app = express();
 const path = require('path');
 var http = require('http').createServer(app);
 const WebSocket = require('ws');
+const mysql = require('mysql');
 let CLIENTS = [];
 
 app.use(express.static(path.join(__dirname,"..","build")));
@@ -54,25 +23,31 @@ webSocketServer.on('connection', function(ws){
   ws.on('message',function(message) {
     console.log('received: %s', message);
     console.log("CLIENTS = ",CLIENTS);
-    sendAll(message);
+    sendAll(message, ws);
   })
 });
 
-const sendAll = message => {
+const sendAll = (message, sender) => {
   for(var i=0; i<CLIENTS.length;i++){
-    CLIENTS[i].send(message);
+    if(CLIENTS[i] !== sender) CLIENTS[i].send(message);
   }
 }
 
-// webSocketServer.on('connnection', function connection(ws) {
-//   ws.on('request', (request) => {
-//     console.log(request.origin);
+// DATABASE
+// var connection;
+
+// const connectToDB = (username,password) =>{
+//   connection = mysql.createConnection({
+//     host: 'rossdanielconover.com',
+//     user: username,
+//     password: password,
+//     database: 'rossdani_tcg-engine'
 //   });
-//   ws.on('message', function incoming(data) {
-//     webSocketServer.clients.forEach(function each(client) {
-//       if(client !== ws && client.readyState === WebSocket.OPEN){
-//         client.send(data);
-//       }
-//     })
-//   })
-// });
+  
+//   connection.connect(function(err){
+//     if(err) throw err;
+//     console.log("CONNECTED!");
+//   });
+// }
+
+// connectToDB("rossdani_tcgAdmin","");
