@@ -1,8 +1,8 @@
 import React,{useEffect, useState} from 'react';
 import Card from './components/card';
 
-// const URL = 'wss://tcg-engine.herokuapp.com';
-const URL = 'ws://localhost:5000';
+const URL = 'wss://tcg-engine.herokuapp.com';
+// const URL = 'ws://localhost:5000';
 
 const Game = props => {
 
