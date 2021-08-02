@@ -7,8 +7,32 @@
   height: 100vh;
 }
 
-.game-field .top-player{
+.game-field .top-player,
+.game-field .bottom-player{
+  position: relative;
   width: 100%;
   height: 50vh;
-  border-bottom: 2px solid black;
+  padding: 32px;
+}
+
+.game-field .top-player{
+  border-top: 2px solid black;
+  transform: rotate(180deg);
+}
+
+.deck-zone{
+  position: absolute;
+    top: 32px; right: 32px;
+  border: 1px solid black;
+    border-radius: 3px;
+}
+
+.deck-zone button{
+  background: none;
+  border: none;
+  padding: 8px;
+}
+
+.deck-zone img{
+  width: 125px; height: 175px;
 }
