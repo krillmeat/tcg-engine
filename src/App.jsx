@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import './App.css';
-import LoginPrompt from './login/login-prompt';
+// import LoginPrompt from './login/login-prompt';
 import Game from './game/game';
 
 const checkIfLoggedIn = loggedInStatus => {
@@ -26,11 +26,12 @@ function App() {
   }, []);
 
   return (
-    checkIfLoggedIn(isLoggedIn) 
-      ? <Game
-          username = {username}/> 
-      : <LoginPrompt 
-          loginCallback={loginCallback}/>
+    // checkIfLoggedIn(isLoggedIn) 
+    //   ? <Game
+    //       username = {username}/> 
+    //   : <LoginPrompt 
+    //       loginCallback={loginCallback}/>
+    <Game />
   );
 }
 

@@ -1,11 +1,9 @@
 import React from 'react';
-
-const getSet = setData => {
-  return setData.split("-")[0];
-}
+import {getSet} from '../utils/game-utils';
 
 const Card = props => {
   const {
+    cardName,
     setNumber,
     cardType,
     rarity,
@@ -15,9 +13,9 @@ const Card = props => {
   const imgSrc = `/cards/${getSet(setNumber)}/${setNumber}.png`;
 
   return (
-    <>
+    <div className='card'>
       <img src={imgSrc}/>
-    </>
+    </div>
   )
 }
 

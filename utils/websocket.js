@@ -18,6 +18,7 @@ let webSocketServer = new WebSocket.Server({server: http});
 
 webSocketServer.on('connection', function(ws){
   CLIENTS.push(ws);
+  if(CLIENTS.length === 1) console.log("You are the first client to join, making you host...");
   
   ws.on('message',function(message) {
     console.log('received: %s', message);
