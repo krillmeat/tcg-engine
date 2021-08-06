@@ -18,6 +18,7 @@ class Card {
   }
 
   get cardNumber(){ return this._cardNumber }
+  set cardNumber(newNumber){ this._cardNumber = newNumber }
 
   get elem(){ return this._elem }
 }

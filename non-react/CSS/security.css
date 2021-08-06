@@ -11,7 +11,7 @@
 .security-zone .card{
   width: 100px; height: 140px;
   margin-left: -90px;
-  background-image: url('../MEDIA/card-back.png') !important;
+  background-image: url('https://rossdanielconover.com/DGMN_CARDS/card-back.png') !important;
   background-size: 100%;
   box-shadow: -2px 0 4px 0 rgba(0,0,0,.15);
 }
@@ -19,5 +19,5 @@
 .security-zone .card:first-of-type{ margin-left: 0px }
 
 #opponent-field .security-zone{
-  transform: rotate(180deg);
+  transform: rotate(180deg) scale(.75);
 }

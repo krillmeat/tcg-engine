@@ -15,8 +15,8 @@
   <meta property="og:description" content="An App to Play TCGs">
   <meta property="og:image" content="image.png">
 
-  <link rel="icon" href="/favicon.ico">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <!-- <link rel="icon" href="/favicon.ico">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml"> -->
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
   <link rel="stylesheet" href="CSS/reset.css">
@@ -39,7 +39,7 @@
     <!-- OPPONENT -->
     <div id='opponent-field' class='play-field'>
       <div class='deck-zone'>
-        <div id='opponent-deck' class='deck'><img src='MEDIA/card-back.png'/> <div class='deck-count'>0</div></div>
+        <div id='opponent-deck' class='deck'><img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/> <div class='deck-count'>0</div></div>
       </div>
       <div class='hand-zone'>
         <ul id='opponent-hand' class='hand'>
@@ -56,7 +56,7 @@
     <!-- PLAYER -->
     <div id='player-field' class='play-field'>
       <div class='deck-zone'>
-       <div id='player-deck' class='deck'><img src='MEDIA/card-back.png'/> <div class='deck-count'>0</div></div>
+       <div id='player-deck' class='deck'><img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/> <div class='deck-count'>0</div></div>
       </div>
       <div class='hand-zone'>
         <ul id='player-hand' class='hand'>
@@ -67,6 +67,9 @@
         <ul id='player-security' class='security'>
           <!-- SECURITY GOES HERE-->
         </ul>
+      </div>
+      <div class='battle-zone'>
+        <div id='player-tamers' class='tamers'></div>
       </div>
     </div>
   </div>
@@ -89,11 +92,23 @@
 
 
    // LOT OF TEMPORARY STUFF HERE
+   let game;
+   const SITE_URL = window.location.href;
+   const queryParams = SITE_URL.indexOf("?") !== -1 ? SITE_URL.substring(SITE_URL.indexOf("?")+1).split("&") : [];
 
    let showNotes = true;
+   let showDebug = queryParams[getParamIndex(queryParams,'debug')]?.split("=")[1] === 'true';
+   logDebug(`Query Params = ${queryParams}`);
    logNote('Starting Game');
-   let game = new Game();
-    startGame();
+   let login = queryParams[getParamIndex(queryParams,'login')]?.split("=")[1];
+   let skipWS = queryParams[getParamIndex(queryParams,'skip-ws')]?.split("=")[1] === 'true';
+   if(skipWS){
+    game = new Game();
+    // startGame();
+   } else{
+    //  let ws = new WebSocket(login);
+     game = new Game(login);
+   }
   </script>
 </body>
 </html>

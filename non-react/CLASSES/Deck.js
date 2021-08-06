@@ -25,14 +25,14 @@ class Deck {
   }
 
   shuffle(){
-    let cards = this.cards;
-    for(var i = cards.length -1; i > 0; i--){
+    let shuffledCards = this.cards;
+    for(var i = shuffledCards.length -1; i > 0; i--){
       var j = Math.floor(Math.random()* (i+1));
-      var temp = cards[i];
-      cards[i] = cards[j];
-      cards[j] = temp;
+      var temp = shuffledCards[i];
+      shuffledCards[i] = shuffledCards[j];
+      shuffledCards[j] = temp;
     }
-    return cards;
+    this.cards = shuffledCards;
   }
 
   drawCard(){
@@ -47,4 +47,5 @@ class Deck {
   set decklist(newDecklist){ this._decklist = newDecklist }
 
   get cards(){ return this._cards }
+  set cards(newCards){ this._cards = newCards }
 }

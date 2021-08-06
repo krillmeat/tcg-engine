@@ -1,27 +1,16 @@
-let username = "krillmeat";
+class Server {
+  constructor(username){
+    this._username = username;
+    this._URL = 'wss://tcg-engine.herokuapp.com';
+    // this._URL = 'ws://localhost:5000';
+    this._ws = new WebSocket(this._URL);   
+  }
 
-const URL = 'wss://tcg-engine.herokuapp.com';
-// const URL = 'ws://localhost:5000';
+  sendMessage(message){
+    this._ws.send(JSON.stringify(message));
+  }
 
-let ws = new WebSocket(URL);
-    ws.onopen = () => {
-      let id = username; // Todo - Make this attach to username from login
-      console.log("WS - Open = "+username);
-      ws.send(JSON.stringify({
-        actnName: 'join',
-        actionTarget: id
-      }));
-    }
+  get username(){ return this._username }
 
-    ws.onmessage = message => {
-      console.log("MESSAGE = ",message);
-      let action = message.actionName;
-      switch(action){
-        case 'host':
-          console.log("YOU ARE THE HOST!");
-          break;
-        default:
-          logWarning('WARNING: Action not found');
-          break;
-      }
-    }
+  get ws(){ return this._ws }
+}

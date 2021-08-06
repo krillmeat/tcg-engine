@@ -6,7 +6,7 @@
 .deck{
   position: relative;
   width: 132px; height: 182px;
-  padding: 16px;
+  padding: 8px;
   border: 1px solid black;
     border-radius: 3px;
 }
@@ -25,5 +25,5 @@
 }
 
 #opponent-field .deck-zone{
-  transform: rotate(180deg);
+  transform: rotate(180deg) scale(.75);
 }

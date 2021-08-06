@@ -6,7 +6,7 @@ class Hand {
 
   drawCard(card){
     this.cards.push(card);
-    this.elem.appendChild(card.elem);
+    this.elem.appendChild(card.renderCard());
   }
 
   get elem(){ return this._elem }
