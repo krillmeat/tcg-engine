@@ -38,6 +38,10 @@ webSocketServer.on('connection', function(ws){
   
   ws.on('message',function(message) {
     let msg = JSON.parse(message);
+    console.log('received: %s', message);
+    console.log("Message is type =",typeof msg);
+    console.log("Message Name = ",msg.actnName);
+    console.log("Check message match = ",msg.actName === "join");
     if(msg.actName === "join"){
       console.log("JOINING " + CLIENTS.length);
       if(CLIENTS.length === 1){
