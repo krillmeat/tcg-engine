@@ -1,0 +1,57 @@
+.card{
+  width: 150px;
+  height: 210px;
+  margin: 0 8px;
+
+  background-size: 100%;
+
+  border-radius: 5%;
+  box-shadow: 0 -2px 8px 0 rgba(0,0,0,.25);
+}
+
+.hand .card{
+  animation: slideInPlayerHand .2s linear 0s 1;
+}
+
+@keyframes slideInPlayerHand{
+  0%{transform: translateY(100px)}
+  100%{transform: translateY(0px)}
+}
+
+#player-hand .card:hover{
+  transform: translateY(-105px);
+}
+
+#opponent-hand .card{ 
+  width: 100px;
+  height: 140px;
+  transform: translateY(72px);
+  background-image: url('../MEDIA/card-back.png') !important ;
+  animation: slideInOpponentHand .2s linear 0s 1;
+}
+
+@keyframes slideInOpponentHand{
+  0%{transform: translateY(100px)}
+  100%{transform: translateY(72px)}
+}
+
+
+
+
+
+
+.card.ST1-02{ background-image: url('../MEDIA/CARDS/ST1/ST1-02.png') }
+.card.ST1-03{ background-image: url('../MEDIA/CARDS/ST1/ST1-03.png') }
+.card.ST1-04{ background-image: url('../MEDIA/CARDS/ST1/ST1-04.png') }
+.card.ST1-05{ background-image: url('../MEDIA/CARDS/ST1/ST1-05.png') }
+.card.ST1-06{ background-image: url('../MEDIA/CARDS/ST1/ST1-06.png') }
+.card.ST1-07{ background-image: url('../MEDIA/CARDS/ST1/ST1-07.png') }
+.card.ST1-08{ background-image: url('../MEDIA/CARDS/ST1/ST1-08.png') }
+.card.ST1-09{ background-image: url('../MEDIA/CARDS/ST1/ST1-09.png') }
+.card.ST1-10{ background-image: url('../MEDIA/CARDS/ST1/ST1-10.png') }
+.card.ST1-11{ background-image: url('../MEDIA/CARDS/ST1/ST1-11.png') }
+.card.ST1-12{ background-image: url('../MEDIA/CARDS/ST1/ST1-12.png') }
+.card.ST1-13{ background-image: url('../MEDIA/CARDS/ST1/ST1-13.png') }
+.card.ST1-14{ background-image: url('../MEDIA/CARDS/ST1/ST1-14.png') }
+.card.ST1-15{ background-image: url('../MEDIA/CARDS/ST1/ST1-15.png') }
+.card.ST1-16{ background-image: url('../MEDIA/CARDS/ST1/ST1-16.png') }

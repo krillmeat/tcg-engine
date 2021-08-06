@@ -6,7 +6,7 @@ const WebSocket = require('ws');
 const mysql = require('mysql');
 let CLIENTS = [];
 
-app.use(express.static(path.join(__dirname,"..","build")));
+app.use(express.static(path.join(__dirname,"..","non-react")));
 
 http.listen(process.env.PORT || 5000, function() {
   var host = http.address().address

@@ -1,0 +1,46 @@
+.game-field{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; height: 100vh;
+}
+
+.play-field{
+  position: relative;
+}
+
+#player-field{ 
+  height: 60vh;
+  border-top: 2px solid black;
+}
+
+#opponent-field{
+  height: 40vh;
+  transform: rotate(180deg);
+}
+
+#memory-gauge{
+  position: absolute;
+  top: calc(40vh - 19px);
+  left: calc(50vw - 420px);
+  z-index: 999;
+}
+
+#memory-gauge ul{
+  display: flex;
+}
+
+#memory-gauge ul li{
+  border: 1px solid black;
+  background: #FFF;
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  font-size: 2em;
+  padding-top: 5px;
+  text-align: center;
+  margin: 4px;
+}
+
+#memory-gauge ul li:nth-of-type(n+10){
+  transform: rotate(180deg);
+}

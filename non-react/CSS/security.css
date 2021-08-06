@@ -1,0 +1,23 @@
+.security-zone{
+  position: absolute;
+  top: 32px; left: 32px;
+}
+
+.security-zone ul{
+  display: flex;
+    justify-content: flex-start;
+}
+
+.security-zone .card{
+  width: 100px; height: 140px;
+  margin-left: -90px;
+  background-image: url('../MEDIA/card-back.png') !important;
+  background-size: 100%;
+  box-shadow: -2px 0 4px 0 rgba(0,0,0,.15);
+}
+
+.security-zone .card:first-of-type{ margin-left: 0px }
+
+#opponent-field .security-zone{
+  transform: rotate(180deg);
+}

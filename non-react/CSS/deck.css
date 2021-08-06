@@ -1,0 +1,29 @@
+.deck-zone{
+  position: absolute;
+  right: 32px; top: 32px;
+}
+
+.deck{
+  position: relative;
+  width: 132px; height: 182px;
+  padding: 16px;
+  border: 1px solid black;
+    border-radius: 3px;
+}
+
+.deck img{
+  width: 100%;
+}
+
+.deck .deck-count{
+  position: absolute;
+  top: 62px; left: 41px;
+  background: white;
+  border-radius: 50%;
+  padding: 8px;
+  font-size: 2em;
+}
+
+#opponent-field .deck-zone{
+  transform: rotate(180deg);
+}

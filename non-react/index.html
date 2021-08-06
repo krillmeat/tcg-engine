@@ -1,0 +1,99 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>DGMN TCG</title>
+  <meta name="description" content="A simple HTML5 Template for new projects.">
+  <meta name="author" content="SitePoint">
+
+  <meta property="og:title" content="A Basic HTML5 Template">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.sitepoint.com/a-basic-html5-template/">
+  <meta property="og:description" content="An App to Play TCGs">
+  <meta property="og:image" content="image.png">
+
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <link rel="stylesheet" href="CSS/reset.css">
+  <link rel="stylesheet" href="CSS/main.css">
+  <link rel="stylesheet" href="CSS/field.css">
+  <link rel="stylesheet" href="CSS/deck.css">
+  <link rel="stylesheet" href="CSS/hand.css">
+  <link rel="stylesheet" href="CSS/security.css">
+  <link rel="stylesheet" href="CSS/card.css">
+
+</head>
+
+<body>
+  <div class='game-field'>
+
+    <div id='memory-gauge'>
+      <ul><li>10</li><li>9</li><li>8</li><li>7</li><li>6</li><li>5</li><li>4</li><li>3</li><li>2</li><li>1</li><li>0</li><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li></ul>
+    </div>
+
+    <!-- OPPONENT -->
+    <div id='opponent-field' class='play-field'>
+      <div class='deck-zone'>
+        <div id='opponent-deck' class='deck'><img src='MEDIA/card-back.png'/> <div class='deck-count'>0</div></div>
+      </div>
+      <div class='hand-zone'>
+        <ul id='opponent-hand' class='hand'>
+          <!-- CARDS GET DRAWN HERE -->
+        </ul>
+      </div>
+      <div class='security-zone'>
+        <ul id='opponent-security' class='security'>
+          <!-- SECURITY GOES HERE-->
+        </ul>
+      </div>
+    </div>
+    
+    <!-- PLAYER -->
+    <div id='player-field' class='play-field'>
+      <div class='deck-zone'>
+       <div id='player-deck' class='deck'><img src='MEDIA/card-back.png'/> <div class='deck-count'>0</div></div>
+      </div>
+      <div class='hand-zone'>
+        <ul id='player-hand' class='hand'>
+          <!-- CARDS GET DRAWN HERE -->
+        </ul>
+      </div>
+      <div class='security-zone'>
+        <ul id='player-security' class='security'>
+          <!-- SECURITY GOES HERE-->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src='UTILS/utils.js'></script>
+
+  <script src="SERVER/server.js"></script>
+  <script src="SERVER/actions.js"></script>
+
+  <script src="DB/card.db.js"></script>
+  <script src="DB/deck.db.js"></script>
+
+  <script src="CLASSES/Game.js"></script>
+  <script src="CLASSES/Memory-Gauge.js"></script>
+  <script src="CLASSES/Deck.js"></script>
+  <script src="CLASSES/Hand.js"></script>
+  <script src="CLASSES/Card.js"></script>
+  <script src="CLASSES/Security.js"></script>
+  <script type='text/javascript'>
+
+
+   // LOT OF TEMPORARY STUFF HERE
+
+   let showNotes = true;
+   logNote('Starting Game');
+   let game = new Game();
+    startGame();
+  </script>
+</body>
+</html>
