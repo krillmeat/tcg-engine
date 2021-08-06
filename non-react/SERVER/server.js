@@ -7,10 +7,10 @@ let ws = new WebSocket(URL);
     ws.onopen = () => {
       let id = username; // Todo - Make this attach to username from login
       console.log("WS - Open = "+username);
-      ws.send({
+      ws.send(JSON.stringify({
         actnName: 'join',
         actionTarget: id
-      });
+      }));
     }
 
     ws.onmessage = message => {
