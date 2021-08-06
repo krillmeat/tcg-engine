@@ -37,11 +37,12 @@ webSocketServer.on('connection', function(ws){
   // })
   
   ws.on('message',function(message) {
+    let msg = JSON.parse(message.data);
     console.log('received: %s', message);
-    console.log("Message is type =",typeof message);
-    console.log("Message Name = ",message.actnName);
-    console.log("Check message match = ",message.indexOf("join") !== -1);
-    if(message.actnName === 'join'){
+    console.log("Message is type =",typeof msg);
+    console.log("Message Name = ",msg.actnName);
+    console.log("Check message match = ",msg.actName === "join");
+    if(msg.indexOf("join") !== -1){
       console.log("JOINING " + CLIENTS.length);
       if(CLIENTS.length === 1){
         CLIENTS[0].send("Hi");
