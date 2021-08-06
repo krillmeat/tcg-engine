@@ -5,6 +5,7 @@ var http = require('http').createServer(app);
 const WebSocket = require('ws');
 const mysql = require('mysql');
 let CLIENTS = [];
+let testCLIENTS = [];
 
 app.use(express.static(path.join(__dirname,"..","non-react")));
 
@@ -19,6 +20,10 @@ let webSocketServer = new WebSocket.Server({server: http});
 webSocketServer.on('connection', function(ws){
 
   console.log("BASE");
+
+  CLIENTS.push(ws);
+
+  console.log("CLIENTS IS "+CLIENTS.length+" LONG");
 
   sendAll('Message to Receive','nobody');
 
