@@ -25,8 +25,6 @@ webSocketServer.on('connection', function(ws){
 
   console.log("CLIENTS IS "+CLIENTS.length+" LONG");
 
-  sendAll('Message to Receive','nobody');
-
   // ws.on('request',function(request){
   //   console.log("REQUEST RECEIVED");
   //   let connection = request.accept(null, request.origin);
@@ -40,6 +38,8 @@ webSocketServer.on('connection', function(ws){
   
   ws.on('message',function(message) {
     console.log('received: %s', message);
+    console.log("Message Name = ",message.actnName);
+    console.log("Check message match = ",message.actnName === 'join');)
     if(message.actnName === 'join'){
       console.log("JOINING " + CLIENTS.length);
       if(CLIENTS.length === 1){
