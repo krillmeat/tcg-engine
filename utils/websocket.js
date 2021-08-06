@@ -40,7 +40,7 @@ webSocketServer.on('connection', function(ws){
     console.log('received: %s', message);
     console.log("Message is type =",typeof message);
     console.log("Message Name = ",message.actnName);
-    console.log("Check message match = ",message.actnName === 'join');
+    console.log("Check message match = ",message.indexOf("join") !== -1);
     if(message.actnName === 'join'){
       console.log("JOINING " + CLIENTS.length);
       if(CLIENTS.length === 1){
