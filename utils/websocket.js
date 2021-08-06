@@ -18,10 +18,12 @@ let webSocketServer = new WebSocket.Server({server: http});
 
 webSocketServer.on('connection', function(ws){
 
+  console.log("BASE");
 
   sendAll('Message to Receive','nobody');
 
   ws.on('request',function(request){
+    console.log("REQUEST RECEIVED");
     let connection = request.accept(null, request.origin);
     let index = CLIENTS.push(connection) -1;
     if(index === 0) {
