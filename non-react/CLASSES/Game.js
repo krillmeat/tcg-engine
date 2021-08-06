@@ -28,6 +28,10 @@ class Game {
         if(this._gameTimerCounter %32 === 0) this.runAction({actnName:'state-update'});
       }
     }, 250);
+
+    document.querySelector("button.start-button").addEventListener("click",() => {
+      this.startGame();
+    });
   }
 
   startGame(){
