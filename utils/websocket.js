@@ -27,19 +27,27 @@ webSocketServer.on('connection', function(ws){
 
   sendAll('Message to Receive','nobody');
 
-  ws.on('request',function(request){
-    console.log("REQUEST RECEIVED");
-    let connection = request.accept(null, request.origin);
-    let index = CLIENTS.push(connection) -1;
-    if(index === 0) {
-      CLIENTS[index].send({actnName:'host',actnTarget:'player'});
-    } else if(index === 1){
-      CLIENTS[index].send({actnName:'player-two',actnTarget:'player'});
-    } else{ CLIENTS[index].send({actName:'spectator',actionTarget:'player'})}
-  })
+  // ws.on('request',function(request){
+  //   console.log("REQUEST RECEIVED");
+  //   let connection = request.accept(null, request.origin);
+  //   let index = CLIENTS.push(connection) -1;
+  //   if(index === 0) {
+  //     CLIENTS[index].send({actnName:'host',actnTarget:'player'});
+  //   } else if(index === 1){
+  //     CLIENTS[index].send({actnName:'player-two',actnTarget:'player'});
+  //   } else{ CLIENTS[index].send({actName:'spectator',actionTarget:'player'})}
+  // })
   
   ws.on('message',function(message) {
     console.log('received: %s', message);
+    if(message.actnName === 'join'){
+      console.log("JOINING " + CLIENTS.length);
+      if(CLIENTS.length === 1){
+        CLIENTS[0].send("Hi");
+      } else{
+        CLIENTS[0].send("You're not first...");
+      }
+    }
     sendAll(message, ws);
   })
 });

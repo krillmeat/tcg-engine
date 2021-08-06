@@ -8,13 +8,13 @@ let ws = new WebSocket(URL);
       let id = username; // Todo - Make this attach to username from login
       console.log("WS - Open = "+username);
       ws.send(JSON.stringify({
-        actnName: 'help',
+        actnName: 'join',
         actionTarget: id
       }));
     }
 
     ws.onmessage = message => {
-      console.log("MESSAGE = "+message);
+      console.log("MESSAGE = ",message);
       let action = message.actionName;
       switch(action){
         case 'host':
