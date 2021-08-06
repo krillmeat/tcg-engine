@@ -21,6 +21,8 @@ webSocketServer.on('connection', function(ws){
   if(CLIENTS.length === 1){
     CLIENTS[0].send({actnName:'host',actnTarget:'player'});
   }
+
+  sendAll('Message to Receive','nobody');
   
   ws.on('message',function(message) {
     console.log('received: %s', message);
