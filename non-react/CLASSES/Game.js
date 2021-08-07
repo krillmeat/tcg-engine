@@ -29,8 +29,12 @@ class Game {
       }
     }, 250);
 
-    document.querySelector("button.start-button").addEventListener("click",() => {
-      this.startGame();
+    document.querySelector("button.start-button").addEventListener("click",e => {
+      // this.startGame();
+      this.playerDeck = new Deck(getById('player-deck'),0,starterDeckTwo[1]);
+      this.opponentDeck = new Deck(getById('opponent-deck'),0,starterDeckOne[1]);
+      this.startPhaseAction('player');
+      e.target.style.top = "-1000px";
     });
   }
 
@@ -52,9 +56,10 @@ class Game {
         break;
       case 'player-two':
         logServer("You are player two! Starting the game...");
-        this.playerDeck = new Deck(getById('player-deck'),0,starterDeckTwo[1]);
-        this.opponentDeck = new Deck(getById('opponent-deck'),0,starterDeckOne[1]);
-        this.startPhaseAction(actnTarget);
+        document.querySelector('button.start-button').classList.add('reveal');
+        // this.playerDeck = new Deck(getById('player-deck'),0,starterDeckTwo[1]);
+        // this.opponentDeck = new Deck(getById('opponent-deck'),0,starterDeckOne[1]);
+        // this.startPhaseAction(actnTarget);
         break;
       case 'draw':
         this.drawAction(actnTarget);
@@ -121,6 +126,7 @@ class Game {
 
   startPhaseAction(target){
     logNote("START PHASE");
+    console.log(target);
     if(target === 'player'){ this.startGame() }
   }
 

@@ -44,3 +44,17 @@
 #memory-gauge ul li:nth-of-type(n+10){
   transform: rotate(180deg);
 }
+
+.start-button{
+  position: fixed;
+  top: 60vh;
+  left: calc(50vw - 60px);
+  font-size: 2em;
+  padding: 8px;
+  z-index: 999;
+  opacity: 0;
+}
+
+.start-button.reveal{
+  opacity: 1;
+}
