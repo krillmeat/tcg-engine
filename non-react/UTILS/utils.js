@@ -27,3 +27,7 @@ function getParamIndex(paramList,paramMatch){
   }
   return -1;
 }
+
+function getOpponentNumber(playerNo){
+  return playerNo === 1 ? 2 : 1;
+}

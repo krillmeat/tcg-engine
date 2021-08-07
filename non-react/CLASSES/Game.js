@@ -6,6 +6,10 @@ class Game {
     this.server.ws.onclose = () => { this.onClose() };
 
     this._memoryGauge = new MemoryGauge(getById('memory-gauge'));
+    this._currentPhase = 'none';
+    this._currentPlayer = 0;
+
+    this._playerNumber = 0;
 
     this._playerDeck;
     this._playerHand = new Hand(getById('player-hand'));
@@ -33,14 +37,9 @@ class Game {
       // this.startGame();
       this.playerDeck = new Deck(getById('player-deck'),0,starterDeckTwo[1]);
       this.opponentDeck = new Deck(getById('opponent-deck'),0,starterDeckOne[1]);
-      this.startPhaseAction('player');
+      this.setupPhaseAction(this.playerNumber);
       e.target.style.top = "-1000px";
     });
-  }
-
-  startGame(){
-    this.actionQueue = [{actnName:'shuffle-deck',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},
-    {actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'}];
   }
 
   runAction(action){
@@ -48,18 +47,17 @@ class Game {
     let actnTarget = action.actnTarget;
 
     switch (actnName){
-      case 'host':
-        logServer("You are the host!");
+      case 'load-player-one':
         // THIS NEEDS TO BE DONE DYNAMICALLY
+        this.playerNumber = 1;
+        logServer("You are Player "+this.playerNumber);
         this.playerDeck = new Deck(getById('player-deck'),0,starterDeckOne[1]);
-        this.opponentDeck = new Deck(getById('opponent-deck'),0,starterDeckTwo[1]);
+        this.opponentDeck = new Deck(getById('opponent-deck'),0,starterDeckTwo[1]); // Figure out how to SEND this over after this is over
         break;
-      case 'player-two':
-        logServer("You are player two! Starting the game...");
+      case 'load-player-two':
+        this.playerNumber = 2;
+        logServer("You are Player "+this.playerNumber);
         document.querySelector('button.start-button').classList.add('reveal');
-        // this.playerDeck = new Deck(getById('player-deck'),0,starterDeckTwo[1]);
-        // this.opponentDeck = new Deck(getById('opponent-deck'),0,starterDeckOne[1]);
-        // this.startPhaseAction(actnTarget);
         break;
       case 'draw':
         this.drawAction(actnTarget);
@@ -74,8 +72,14 @@ class Game {
       case 'server-tap':
         this._server.sendMessage({actnName:'server-tap'});
         break;
-      case 'start-phase':
-        this.startPhaseAction(actnTarget);
+      case 'end-phase':
+        this.endPhaseAction();
+        break;
+      case 'begin-game-phase':
+        console.log("BEGIN THE DANG GAME!!");
+        break;
+      case 'setup-phase':
+        this.setupPhaseAction(actnTarget);
         break;
       case 'unsuspend-phase':
         console.log("UNSUSPEND PHASE");
@@ -121,13 +125,31 @@ class Game {
       }
       if(target === 'player') this.server.sendMessage({actnName:'shuffle-deck',actnTarget:'opponent',actnDeck:shuffledCardList})
     }
-    
   }
 
-  startPhaseAction(target){
-    logNote("START PHASE");
-    console.log(target);
-    if(target === 'player'){ this.startGame() }
+  endPhaseAction(){
+    console.log("ENDING PHASE = "+this.currentPhase+" : "+this.playerNumber);
+    switch(this.currentPhase){
+      case 'setup-phase':
+        if(this.playerNumber === 2){
+          this.server.sendMessage({actnName:'setup-phase',actnTarget:getOpponentNumber(this.playerNumber)});
+        } else{
+          this.runAction({actnName:'begin-game-phase'});
+        }
+        break;
+      default:
+        logWarning(`WARNING: No matching phase...`);
+        break;
+    }
+  }
+
+  setupPhaseAction(playerNo){
+    logNote("SETUP PHASE -- Player "+playerNo);
+    this.currentPhase = 'setup-phase';
+    this._currentPlayer = playerNo;
+    
+    this.actionQueue = [{actnName:'shuffle-deck',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},
+                        {actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'end-phase'}];
   }
 
   onOpen(){
@@ -140,7 +162,7 @@ class Game {
 
   onMessage(message){
     let msg = JSON.parse(message.data);
-    logServer('WS - Message => ',msg);
+    // logServer('WS - Message => ',msg);
 
     this.runAction(msg);
 
@@ -165,7 +187,7 @@ class Game {
 
   onClose(){
     logServer('WS - Closed => ',this.server.username);
-    this.server.ws.sendMessage({
+    this.server.sendMessage({
       actnName: 'leave',
       actnUsername: this.server.username
     });
@@ -173,6 +195,15 @@ class Game {
 
 
   get server(){ return this._server }
+
+  get currentPhase(){ return this._currentPhase }
+  set currentPhase(newPhase){ this._currentPhase = newPhase }
+
+  get currentPlayer(){ return this._currentPlayer }
+  set currentPlayer(newPlayer){ this._currentPlayer = newPlayer }
+
+  get playerNumber(){ return this._playerNumber }
+  set playerNumber(newNumber){ this._playerNumber = newNumber }
 
   get actionQueue(){ return this._actionQueue }
   set actionQueue(newQueue){ this._actionQueue = newQueue }
