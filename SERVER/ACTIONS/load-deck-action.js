@@ -7,6 +7,11 @@ const loadDeckAction = (action, LOBBY, ws) => {
   let playerNumber = action.actnPlayer;
 
   LOBBY.GAME_STATE.players[playerNumber-1].deck = buildDeck(deckList);
+
+  ws.send(JSON.stringify({
+    actnName:'notify',
+    actnMessage:'Deck has been loaded...'
+  }));
 }
 
 const buildDeck = (deckList) => {
