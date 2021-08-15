@@ -3,6 +3,7 @@
   top: 0;
   left: 0;
   width: 100vw; height: 100vh;
+
 }
 
 .play-field{
@@ -11,19 +12,89 @@
 
 #player-field{ 
   height: 60vh;
-  border-top: 2px solid black;
+  border-top: 2px solid white;
+
+  background: rgb(33,45,79);
+  background: radial-gradient(circle at center top, rgba(33,45,79,1) 0%, rgba(23,31,55,1) 100%);
 }
 
 #opponent-field{
   height: 40vh;
   transform: rotate(180deg);
+
+  background: rgb(193,213,223);
+  background: radial-gradient(circle at center top, rgba(193,213,223,1) 0%, rgba(160,179,195,1) 100%);
 }
+
+
+.right-side{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 4vh;
+  right: 2vw;
+  width: 100px;
+}
+
+.left-side{
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  top: 4vh;
+  left: 2vw;
+  width: 250px;
+}
+
+.battle-zone{
+  position: absolute;
+  top: 8vh;
+  left: 24vw;
+  width: 64vw;
+  height: 38vh;
+}
+
+.battle-zone .dgmn-zone{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.play-to-field{
+  position: relative;
+  width: 8vw;
+  height: 12vw;
+}
+
+.play-to-field.focus{
+  border: 2px solid #FFF;
+  opacity: 1;
+  animation: pulse 2s linear 0s infinite;
+}
+
+.play-to-field.focus::after{
+  content: '+';
+  font-family: 2em;
+  text-align: center;
+  position: absolute;
+  top: 4vw;
+}
+
+@keyframes pulse{
+  0%{opacity: 1}
+  50%{opacity: 0}
+  100%{opacity: 1}
+}
+
+
+
+
 
 #memory-gauge{
   position: absolute;
-  top: calc(40vh - 19px);
-  left: calc(50vw - 420px);
+  top: calc(40vh - 24px);
+  left: calc(50vw - 504px);
   z-index: 999;
+  font-family: 'Share Tech Mono', monospace;
 }
 
 #memory-gauge ul{
@@ -31,18 +102,30 @@
 }
 
 #memory-gauge ul li{
-  border: 1px solid black;
+  border: 2px solid #FFF;
   background: #FFF;
   border-radius: 50%;
-  width: 32px; height: 32px;
-  font-size: 2em;
-  padding-top: 5px;
+  width: 40px; height: 40px;
+  font-size: 2.5em;
+  padding-top: 7px;
   text-align: center;
   margin: 4px;
 }
 
-#memory-gauge ul li:nth-of-type(n+10){
+#memory-gauge ul li:nth-of-type(n+12){
+  background: rgb(33,45,79);
   transform: rotate(180deg);
+  color: #FFF;
+}
+
+#memory-gauge ul li.current{
+  box-shadow: 0 0 0 4px rgb(33,45,79), 0 0 0 12px rgb(202, 205, 29);
+  z-index: 999;
+}
+
+#memory-gauge ul li.pulse-focus{
+  animation: pulse 1s linear 0s infinite;
+  box-shadow: 0 0 0 4px rgb(33,45,79), 0 0 0 8px rgb(202, 205, 29);
 }
 
 .start-button{
@@ -57,4 +140,30 @@
 
 .start-button.reveal{
   opacity: 1;
+}
+
+
+
+
+.phase-message{
+  position: absolute;
+  top: -2000px; left: calc(50vw - 300px);
+  font-size: 4em;
+  font-weight: bold;
+  padding: 48px 64px;
+  background: #FFF;
+  font-family: 'Share Tech Mono', monospace;
+  text-align: center;
+  width: 600px;
+  z-index: 999;
+  opacity: 1;
+  text-transform: uppercase;
+}
+
+.phase-message.show{
+  top: calc(40vh - 76px);
+}
+
+.phase-message .player-number{
+  font-size: .5em;
 }

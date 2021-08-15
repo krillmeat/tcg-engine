@@ -1,6 +1,11 @@
 .security-zone{
-  position: absolute;
-  top: 32px; left: 32px;
+  border: 2px solid #FFF;
+  width: 100%;
+  padding: 8px;
+}
+
+#player-field .security-zone{
+  top: 48px;
 }
 
 .security-zone ul{
@@ -9,11 +14,16 @@
 }
 
 .security-zone .card{
-  width: 100px; height: 140px;
+  width: 8vw;
   margin-left: -90px;
   background-image: url('https://rossdanielconover.com/DGMN_CARDS/card-back.png') !important;
   background-size: 100%;
   box-shadow: -2px 0 4px 0 rgba(0,0,0,.15);
+}
+
+.security-zone .card img{
+  width: 100%;
+  opacity: 0;
 }
 
 .security-zone .card:first-of-type{ margin-left: 0px }

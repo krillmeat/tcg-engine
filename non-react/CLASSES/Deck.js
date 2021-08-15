@@ -3,7 +3,7 @@ class Deck {
     this._elem = elem;
     this._player = player;
     this._decklist = decklist;
-    this._cards = this.createDeck(this.decklist);
+    this._cards = [];
 
     this.updateDeckCount(this.cards.length);
   }
@@ -12,6 +12,14 @@ class Deck {
     let cardList = [];
     for(let card of decklist){
       cardList.push(new Card(card));
+    }
+    return cardList;
+  }
+
+  cloneDeck(deckCards){
+    let cardList = [];
+    for(let card of deckCards){
+      cardList.push(new Card(card._cardNumber,card._cardId));
     }
     return cardList;
   }
@@ -25,6 +33,7 @@ class Deck {
   }
 
   shuffle(){
+    console.log("DECK SHUFFLED");
     let shuffledCards = this.cards;
     for(var i = shuffledCards.length -1; i > 0; i--){
       var j = Math.floor(Math.random()* (i+1));

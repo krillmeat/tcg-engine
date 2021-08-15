@@ -31,3 +31,20 @@ function getParamIndex(paramList,paramMatch){
 function getOpponentNumber(playerNo){
   return playerNo === 1 ? 2 : 1;
 }
+
+
+function getIndex(node) {
+  var children = node.parentNode.querySelectorAll("li");
+  for (i = 0; i < children.length; i++) {
+    if (node === children[i]) break;
+  }
+  return i;
+}
+
+function getCardSet(cardNumber){
+  return cardNumber.split("-")[0];
+}
+
+function getCardNumber(cardNumber){
+  return parseInt(cardNumber.split("-")[1])-1;
+}

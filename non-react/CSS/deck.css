@@ -1,13 +1,11 @@
 .deck-zone{
-  position: absolute;
-  right: 32px; top: 32px;
+  width: 100%;
 }
 
 .deck{
   position: relative;
-  width: 132px; height: 182px;
   padding: 8px;
-  border: 1px solid black;
+  border: 2px solid #FFF;
     border-radius: 3px;
 }
 
@@ -16,14 +14,21 @@
 }
 
 .deck .deck-count{
+  font-family: 'Share Tech Mono',monospace;
   position: absolute;
-  top: 62px; left: 41px;
+  top: 64px; left: 44px;
+  min-width: 40px; height: 40px;
   background: white;
   border-radius: 50%;
-  padding: 8px;
-  font-size: 2em;
+  padding: 9px;
+  font-size: 2.25em;
+  text-align: center;
 }
 
 #opponent-field .deck-zone{
-  transform: rotate(180deg) scale(.75);
+  transform: rotate(180deg);
+}
+
+#opponent-field .deck-zone .deck{
+  border: 2px solid #37446A;
 }

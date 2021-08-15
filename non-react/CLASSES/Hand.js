@@ -6,7 +6,13 @@ class Hand {
 
   drawCard(card){
     this.cards.push(card);
-    this.elem.appendChild(card.renderCard());
+    this.elem.appendChild(card.elem);
+  }
+
+  matchCardElem(id){
+    for(let card of this.cards){
+      if(card.cardId === id) return card;
+    }
   }
 
   get elem(){ return this._elem }

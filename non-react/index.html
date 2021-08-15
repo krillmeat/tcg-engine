@@ -19,13 +19,19 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml"> -->
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="CSS/reset.css">
   <link rel="stylesheet" href="CSS/main.css">
   <link rel="stylesheet" href="CSS/field.css">
   <link rel="stylesheet" href="CSS/deck.css">
   <link rel="stylesheet" href="CSS/hand.css">
   <link rel="stylesheet" href="CSS/security.css">
+  <link rel="stylesheet" href="CSS/breeding.css">
   <link rel="stylesheet" href="CSS/card.css">
+  <link rel="stylesheet" href="CSS/dgmn.css">
 
 </head>
 
@@ -38,42 +44,74 @@
 
     <!-- OPPONENT -->
     <div id='opponent-field' class='play-field'>
-      <div class='deck-zone'>
-        <div id='opponent-deck' class='deck'><img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/> <div class='deck-count'>0</div></div>
+      <div class='right-side'>
+        <div class='deck-zone'>
+          <div id='opponent-deck' class='deck'><img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/> <div class='deck-count'>0</div></div>
+        </div>
       </div>
       <div class='hand-zone'>
         <ul id='opponent-hand' class='hand'>
           <!-- CARDS GET DRAWN HERE -->
         </ul>
       </div>
-      <div class='security-zone'>
-        <ul id='opponent-security' class='security'>
-          <!-- SECURITY GOES HERE-->
-        </ul>
+      <div id='opponent-battlefield' class='battle-zone'>
+        <div id='opponent-dgmn' class='dgmn-zone'>
+        </div>
+        <div id='opponent-tamers' class='tamer-zone'></div>
+      </div>
+      <div class='left-side'>
+        <div class='security-zone'>
+          <ul id='opponent-security' class='security'>
+            <!-- SECURITY GOES HERE-->
+          </ul>
+        </div>
+        <div class='breeding-zone'>
+          <div id='opponent-breeding'>
+            <img src='https://rossdanielconover.com/DGMN_CARDS/egg-card-back.png' class='breeding-deck'/>
+            <div class='current-breeding'>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     
     <!-- PLAYER -->
     <div id='player-field' class='play-field'>
-      <div class='deck-zone'>
-       <div id='player-deck' class='deck'><img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/> <div class='deck-count'>0</div></div>
+      <div class='right-side'>
+        <div class='deck-zone'>
+        <div id='player-deck' class='deck'><img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/> <div class='deck-count'>0</div></div>
+        </div>
+        <!-- TRASH, EVENTUALLY -->
       </div>
       <div class='hand-zone'>
         <ul id='player-hand' class='hand'>
           <!-- CARDS GET DRAWN HERE -->
         </ul>
       </div>
-      <div class='security-zone'>
-        <ul id='player-security' class='security'>
-          <!-- SECURITY GOES HERE-->
-        </ul>
+      <div id='player-battlefield' class='battle-zone'>
+        <div id='player-dgmn' class='dgmn-zone'>
+          <div class='play-to-field'><!----></div>
+        </div>
+        <div id='player-tamers' class='tamer-zone'></div>
       </div>
-      <div class='battle-zone'>
-        <div id='player-tamers' class='tamers'></div>
+      <div class='left-side'>
+        <div class='security-zone'>
+          <ul id='player-security' class='security'>
+            <!-- SECURITY GOES HERE-->
+          </ul>
+        </div>
+        <div class='breeding-zone'>
+          <div id='player-breeding'>
+            <img src='https://rossdanielconover.com/DGMN_CARDS/egg-card-back.png' class='breeding-deck'/>
+            <div class='current-breeding'>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <button class='start-button'>Start Game</button>
+    <div class='phase-message'><p class='player-number'>0</p><p class='phase-name'>SETUP</p></div>
 
   </div>
 
@@ -91,6 +129,9 @@
   <script src="CLASSES/Hand.js"></script>
   <script src="CLASSES/Card.js"></script>
   <script src="CLASSES/Security.js"></script>
+  <script src="CLASSES/Breeding.js"></script>
+  <script src="CLASSES/Battlefield.js"></script>
+  <script src="CLASSES/Dgmn.js"></script>
   <script type='text/javascript'>
 
 
