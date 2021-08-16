@@ -11,8 +11,7 @@ function logDebug(message){
 }
 
 function logServer(message,object){
-  let obj = object || '';
-  console.log(`%c ${message}%o`,'color: #FD971F',obj)
+  object ? console.log(`%c ${message}%o`,'color: #FD971F',object) : console.log(`%c ${message}`,'color: #FD971F');
 }
 
 function getById(idName){

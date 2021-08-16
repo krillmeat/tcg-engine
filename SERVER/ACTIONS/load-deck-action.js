@@ -1,4 +1,3 @@
-let {sendAll} = require('../utils.js');
 const Deck = require('../CLASSES/deck.js');
 const Card = require('../CLASSES/card.js');
 

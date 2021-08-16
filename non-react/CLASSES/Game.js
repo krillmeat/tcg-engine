@@ -42,7 +42,7 @@ class Game {
         if(this._gameTimerCounter %16 === 0) this.runAction({actnName:'server-tap'});
         if(this._gameTimerCounter %32 === 0) this.runAction({actnName:'state-update'});
       }
-    }, 500);
+    }, 1000);
 
     document.querySelector("button.start-button").addEventListener("click",e => {
       this.playerDeck = new Deck(getById('player-deck'),0,starterDeckTwo[1]);
@@ -254,11 +254,24 @@ class Game {
       case 'players-ready':
         console.log("DISPLAY THE DECK SELECTOR"); // TODO - Actually prompt this, in the future...
         let deck = this.playerNumber === 1 ? starterDeckOne : starterDeckTwo; // For now, just send starter deck one or two
-        this.server.sendMessage({
+        this.actionQueue.push({
           actnName:'load-deck',
           actnPlayer: this.playerNumber,
           actnValue: deck
         });
+        this.actionQueue.push({
+          actnName:'load-breeding-deck',
+          actnPlayer: this.playerNumber,
+          actnValue: deck
+        });
+        this.actionQueue.push({
+          actnName:'shuffle-decks',
+          actnPlayer:this.playerNumber
+        })
+        break;
+      case 'shuffle-decks':
+        // TODO - Show a cute deck animation
+        logNote("DECKS SHUFFLED");
         break;
       // case 'load-player-one':
       //   // THIS NEEDS TO BE DONE DYNAMICALLY - RIGHT NOW THE DECK IS HARD CODED

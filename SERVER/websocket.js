@@ -1,13 +1,15 @@
 let GameState = require("./CLASSES/game-state.js");
 
 let joinAction = require("./ACTIONS/join-action.js");
+const loadDeckAction = require("./ACTIONS/load-deck-action.js");
+const loadBreedingDeckAction = require("./ACTIONS/load-breeding-deck-action.js");
 
 var express = require('express');
 var app = express();
 const path = require('path');
 var http = require('http').createServer(app);
 const WebSocket = require('ws');
-const loadDeckAction = require("./ACTIONS/load-deck-action.js");
+
 // const mysql = require('mysql');
 
 app.use(express.static(path.join(__dirname,"..","non-react"))); // Attach the HTML Page to this file/server
@@ -88,6 +90,12 @@ const actionHandler = (action, lobby, ws) =>{
       break;
     case 'load-deck':
       loadDeckAction(action, lobby, ws);
+      break;
+    case 'load-breeding-deck':
+      loadBreedingDeckAction(action, lobby, ws);
+      break;
+    case 'shuffle-decks':
+      shuffleDecksAction(action, lobby, ws);
       break;
     default:
       console.log(`Could not find Action "${actnName}" on Server...`);
