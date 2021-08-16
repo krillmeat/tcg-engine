@@ -35,7 +35,8 @@ class Game {
     this._gameTimerCounter = 0;
     this._gameTimer = setInterval(()=>{
       if(this.actionQueue.length > 0){
-        this.runAction(this.actionQueue[0]);
+        // this.runAction(this.actionQueue[0]);
+        this.server.sendMessage(this.actionQueue[0]);
         this.actionQueue.splice(0,1);
       } else{
         this._gameTimerCounter++;
@@ -272,6 +273,16 @@ class Game {
       case 'shuffle-decks':
         // TODO - Show a cute deck animation
         logNote("DECKS SHUFFLED");
+
+        // TODO - HAVE PLAYERS PLAYER RPS TO DETERMINE WHO'S UP FIRST (TIE TURNS INTO A COIN FLIP)
+        // Until then...
+        if(this.playerNumber === 1 ){
+          let winner = 1;
+          this.actionQueue.push({
+            actnName: 'going-first',
+            actnPlayer: winner
+          })
+        }
         break;
       // case 'load-player-one':
       //   // THIS NEEDS TO BE DONE DYNAMICALLY - RIGHT NOW THE DECK IS HARD CODED

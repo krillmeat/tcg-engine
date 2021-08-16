@@ -1,8 +1,10 @@
 let GameState = require("./CLASSES/game-state.js");
 
-let joinAction = require("./ACTIONS/join-action.js");
+const joinAction = require("./ACTIONS/join-action.js");
 const loadDeckAction = require("./ACTIONS/load-deck-action.js");
 const loadBreedingDeckAction = require("./ACTIONS/load-breeding-deck-action.js");
+const shuffleDecksAction = require("./ACTIONS/shuffle-decks-action.js");
+const setupAction = require("./ACTIONS/setup-action.js");
 
 var express = require('express');
 var app = express();
@@ -96,6 +98,16 @@ const actionHandler = (action, lobby, ws) =>{
       break;
     case 'shuffle-decks':
       shuffleDecksAction(action, lobby, ws);
+      break;
+    case 'going-first':
+      // TODO - Can't use LOBBIES[0], figure out way to make this dynamic
+      LOBBIES[0].GAME_STATE.firstPlayer = action.actnPlayer;
+      LOBBIES[0].GAME_STATE.currentPlayer = action.actnPlayer;
+      setupAction(action, lobby, ws);
+      break;
+    case 'done':
+      // TODO - Create Done Action
+      console.log("Done with action, do the next one");
       break;
     default:
       console.log(`Could not find Action "${actnName}" on Server...`);
