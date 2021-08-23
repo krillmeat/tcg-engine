@@ -1,5 +1,13 @@
 const breedingPhaseAction = (action, LOBBY, ws) => {
-    console.log("TIME TO BREED");
+
+   let player = action.actnPlayer;
+
+   sendAll(LOBBY, JSON.stringify({
+      actnName: 'update-phase',
+      actnPlayer: player,
+      actnValue: 'breeding'
+   }));
+
 }
 
 module.exports = breedingPhaseAction;

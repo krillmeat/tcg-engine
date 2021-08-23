@@ -13,6 +13,7 @@ const path = require('path');
 var http = require('http').createServer(app);
 const WebSocket = require('ws');
 const unsuspendPhaseAction = require("./ACTIONS/unsuspend-phase-action.js");
+const breedingPhaseAction = require("./ACTIONS/breeding-phase-action.js");
 
 // const mysql = require('mysql');
 
@@ -109,6 +110,9 @@ const actionHandler = (action, lobby, ws) =>{
       break;
     case 'unsuspend-phase':
       unsuspendPhaseAction(action,lobby,ws);
+      break;
+    case 'breeding-phase':
+      breedingPhaseAction(action,lobby,ws);
       break;
     case 'phase-complete':
       endPhaseAction(action, lobby, ws);
