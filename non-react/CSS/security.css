@@ -15,10 +15,15 @@
 
 .security-zone .card{
   width: 8vw;
-  margin-left: -90px;
+  margin: 0px;
+  margin-right: 4px;
   background-image: url('https://rossdanielconover.com/DGMN_CARDS/card-back.png') !important;
   background-size: 100%;
   box-shadow: -2px 0 4px 0 rgba(0,0,0,.15);
+}
+
+.security-zone .card:last-of-type{
+  margin-right: 0px;
 }
 
 .security-zone .card img{

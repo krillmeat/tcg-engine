@@ -20,6 +20,12 @@ class Deck {
     this.cards = shuffledCards;
   }
 
+  drawCards(amount){
+    let drawnCards = this.cards.splice(0,amount);
+
+    return drawnCards;
+  }
+
   get cards(){ return this._cards }
   set cards(newCards){ this._cards = newCards }
 }

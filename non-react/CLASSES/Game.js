@@ -26,7 +26,17 @@ class Game {
     this._opponentHand = new Hand(getById('opponent-hand'));                        // Object - Opponent's Hand
     this._opponentSecurity = new Security(getById('opponent-security'));            // Object - Opponent's Security Stack
     this._opponentBreeding = new Breeding(getById('opponent-breeding'));            // Object - Opponent's Breeding Area
-    this._opponentBattlefield = new Battlefield(getById('opponent-battlefield'));   // Object - Opponent's Battlefield
+    this._opponentBattlefield = new Battlefield(getById('opponent-battlefield'));   // Object - Opponent's Battlefield\
+
+
+    this.playerHandElem = document.getElementById("player-hand");
+    this.opponentHandElem = document.getElementById("opponent-hand");
+
+    this.playerSecurityElem = document.getElementById("player-security");
+    this.opponentSecurityElem = document.getElementById("opponent-security");
+
+
+
 
     this._actionQueue = [];
 
@@ -36,14 +46,14 @@ class Game {
     this._gameTimer = setInterval(()=>{
       if(this.actionQueue.length > 0){
         // this.runAction(this.actionQueue[0]);
-        this.server.sendMessage(this.actionQueue[0]);
+        this.runClientAction(this.actionQueue[0]);
         this.actionQueue.splice(0,1);
       } else{
         this._gameTimerCounter++;
         if(this._gameTimerCounter %16 === 0) this.runAction({actnName:'server-tap'});
         if(this._gameTimerCounter %32 === 0) this.runAction({actnName:'state-update'});
       }
-    }, 1000);
+    }, 500);
 
     document.querySelector("button.start-button").addEventListener("click",e => {
       this.playerDeck = new Deck(getById('player-deck'),0,starterDeckTwo[1]);
@@ -56,50 +66,71 @@ class Game {
     });
   }
 
-  drawAction(target, cardId){
-    let drawnCard = this[target+'Deck'].cards[0];
-    this[target+'Deck'].drawCard();
-    this[target+'Hand'].drawCard(drawnCard);
+  drawAction(player, card){
+    let newCardElem = document.createElement("li");
+        newCardElem.classList.add("card");
+        newCardElem.dataset.cardId = card._cardId;
 
-    if(target === 'player') this._server.sendMessage({actnName:'draw',actnTarget:'opponent'})
-  }
+    if(player === this.playerNumber){ // You are drawing
 
-  restoreAction(target){
-    let drawnCard = this[target+'Deck'].cards[0];
-    this[target+'Deck'].drawCard();
-    this[target+'Security'].restore(drawnCard);
+      newCardElem.innerHTML = `<img src='https://rossdanielconover.com/DGMN_CARDS/CARDS/${getCardSet(card._cardNumber)}/${card._cardNumber}.png'/>`;
+      this.playerHandElem.appendChild(newCardElem);
 
-    if(target === 'player') this._server.sendMessage({actnName:'restore',actnTarget:'opponent'})
-  }
-
-  loadDeckAction(target, deckCards){
-    console.log("Loaded Deck - "+target+" = ",this[target+'Deck'].cards);
-    console.log("Hand ? ",this[target+'Hand'].cards);
-    if(deckCards){
-      this[target+'Deck'].cards = this[target+'Deck'].cloneDeck(deckCards);
-    } else{
-      this[target+'Deck'].cards = this[target+'Deck'].createDeck(this[target+'Deck'].decklist);
-      if(target === 'player') this.server.sendMessage({actnName:'load-deck',actnTarget:'opponent',actionDeckCards:this[target+'Deck'].cards})
+      // Drawing Ends Both the Setup and Draw Phases
+      if(this.currentPhase === 'setup'){
+        if(this.playerHandElem.querySelectorAll("li").length === 5){
+          setTimeout(() => {
+            this.server.sendMessage({actnName: 'phase-complete', actnPlayer: this.playerNumber, actnValue: 'setup'})
+          },1000);
+        }
+      } else if(this.currentPhase === 'draw'){
+        setTimeout(() => {
+          this.server.sendMessage({actnName: 'phase-complete', actnPlayer: this.playerNumber, actnValue: 'setup'})
+        },1000);
+      }
+    } else{ // Opponent is Drawing
+      newCardElem.innerHTML = "<img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/>";
+      this.opponentHandElem.appendChild(newCardElem);
     }
   }
 
-  shuffleDeckAction(target, preShuffled){
-    // You want to make sure both players get the same shuffle, so send the shuffle in action
-    if(preShuffled){
-      for(let i = 0; i < this[target+'Deck'].cards.length; i++){
-        this[target+'Deck'].cards[i].cardNumber = preShuffled[i];
-      }
-    } else{
-      this[target+'Deck'].shuffle();
-      this[target+'Deck'].shuffle();
+  restoreAction(player, card){
+    let newCardElem = document.createElement("li");
+        newCardElem.classList.add("card");
+        newCardElem.dataset.cardId = card._cardId;
+        newCardElem.innerHTML = `<img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/>`;
 
-      let shuffledCardList = [];
-      for(let i = 0; i < this[target+'Deck'].cards.length; i++){
-        shuffledCardList.push(this[target+'Deck'].cards[i].cardNumber);
-      }
-      if(target === 'player') this.server.sendMessage({actnName:'shuffle-deck',actnTarget:'opponent',actnDeck:shuffledCardList})
-    }
+    player === this.playerNumber ? this.playerSecurityElem.appendChild(newCardElem) : this.opponentSecurityElem.appendChild(newCardElem);
   }
+
+  // loadDeckAction(target, deckCards){
+  //   console.log("Loaded Deck - "+target+" = ",this[target+'Deck'].cards);
+  //   console.log("Hand ? ",this[target+'Hand'].cards);
+  //   if(deckCards){
+  //     this[target+'Deck'].cards = this[target+'Deck'].cloneDeck(deckCards);
+  //   } else{
+  //     this[target+'Deck'].cards = this[target+'Deck'].createDeck(this[target+'Deck'].decklist);
+  //     if(target === 'player') this.server.sendMessage({actnName:'load-deck',actnTarget:'opponent',actionDeckCards:this[target+'Deck'].cards})
+  //   }
+  // }
+
+  // shuffleDeckAction(target, preShuffled){
+  //   // You want to make sure both players get the same shuffle, so send the shuffle in action
+  //   if(preShuffled){
+  //     for(let i = 0; i < this[target+'Deck'].cards.length; i++){
+  //       this[target+'Deck'].cards[i].cardNumber = preShuffled[i];
+  //     }
+  //   } else{
+  //     this[target+'Deck'].shuffle();
+  //     this[target+'Deck'].shuffle();
+
+  //     let shuffledCardList = [];
+  //     for(let i = 0; i < this[target+'Deck'].cards.length; i++){
+  //       shuffledCardList.push(this[target+'Deck'].cards[i].cardNumber);
+  //     }
+  //     if(target === 'player') this.server.sendMessage({actnName:'shuffle-deck',actnTarget:'opponent',actnDeck:shuffledCardList})
+  //   }
+  // }
 
   /**----------------------------------------------------------------------------------
    * HATCH ACTION
@@ -108,17 +139,17 @@ class Game {
    * ----------------------------------------------------------------------------------
    * @param {String} target 'player' or 'opponent'
    * --------------------------------------------------------------------------------*/
-  hatchAction(target,dgmnId){
-    let hatched = this[target+'Breeding'].breedingDeck[0];
-    this[target+'Breeding'].breedingDeck.splice(0,1);
-    this[target+'Breeding'].currentBreeding = dgmnId ? new Dgmn(hatched.cardNumber,dgmnId) : new Dgmn(hatched.cardNumber);
-    this[target+'Breeding'].breedingDgmnElem.appendChild(this[target+'Breeding'].currentBreeding.elem);
+  // hatchAction(target,dgmnId){
+  //   let hatched = this[target+'Breeding'].breedingDeck[0];
+  //   this[target+'Breeding'].breedingDeck.splice(0,1);
+  //   this[target+'Breeding'].currentBreeding = dgmnId ? new Dgmn(hatched.cardNumber,dgmnId) : new Dgmn(hatched.cardNumber);
+  //   this[target+'Breeding'].breedingDgmnElem.appendChild(this[target+'Breeding'].currentBreeding.elem);
 
-    if(target === 'player'){
-      this._server.sendMessage({actnName:'hatch',actnTarget:'opponent',actnDgmn:this[target+'Breeding'].currentBreeding.dgmnId});
-      setTimeout(()=>{this.actionQueue.push({actnName:'update-phase',actnPhase:'main',actnPlayer:this.playerNumber})},2000);
-    } 
-  }
+  //   if(target === 'player'){
+  //     this._server.sendMessage({actnName:'hatch',actnTarget:'opponent',actnDgmn:this[target+'Breeding'].currentBreeding.dgmnId});
+  //     setTimeout(()=>{this.actionQueue.push({actnName:'update-phase',actnPhase:'main',actnPlayer:this.playerNumber})},2000);
+  //   } 
+  // }
 
   /**----------------------------------------------------------------------------------
    * PLAY TRIAGE ACTION
@@ -258,16 +289,19 @@ class Game {
         this.actionQueue.push({
           actnName:'load-deck',
           actnPlayer: this.playerNumber,
-          actnValue: deck
+          actnValue: deck,
+          actnRunner: 'server'
         });
         this.actionQueue.push({
           actnName:'load-breeding-deck',
           actnPlayer: this.playerNumber,
-          actnValue: deck
+          actnValue: deck,
+          actnRunner: 'server'
         });
         this.actionQueue.push({
           actnName:'shuffle-decks',
-          actnPlayer:this.playerNumber
+          actnPlayer:this.playerNumber,
+          actnRunner: 'server'
         })
         break;
       case 'shuffle-decks':
@@ -280,36 +314,37 @@ class Game {
           let winner = 1;
           this.actionQueue.push({
             actnName: 'going-first',
-            actnPlayer: winner
+            actnPlayer: winner,
+            actnRunner: 'server'
           })
         }
         break;
-      // case 'load-player-one':
-      //   // THIS NEEDS TO BE DONE DYNAMICALLY - RIGHT NOW THE DECK IS HARD CODED
-      //   this.playerNumber = 1;
-      //   logServer("You are Player "+this.playerNumber);
-      //   this.playerDeck = new Deck(getById('player-deck'),0,starterDeckOne[1]);
-      //   this.playerBreeding.breedingDeck = this.playerBreeding.buildDeck(starterDeckOne[0]);
-      //   this.opponentDeck = new Deck(getById('opponent-deck'),0,starterDeckTwo[1]);
-      //   this.opponentBreeding.breedingDeck = this.opponentBreeding.buildDeck(starterDeckTwo[0]);
-      //   break;
-      // case 'load-player-two':
-      //   this.playerNumber = 2;
-      //   logServer("You are Player "+this.playerNumber);
-      //   document.querySelector('button.start-button').classList.add('reveal');
-      //   break;
-      // case 'load-deck':
-      //   let deckCards = action.actionDeckCards || undefined;
-      //   console.log("LOAD DECK = ",deckCards);
-      //   this.loadDeckAction(actnTarget,deckCards);
-      //   break;
+      case 'update-phase':
+        logNote(`Player ${action.actnPlayer} - ${action.actnValue} Phase`);
+        this.currentPhase = action.actnValue;
+        this.showPhase(action.actnValue,action.actnPlayer);
+        break;
+      case 'restore-security':
+        for(let card of action.actnValue){
+          if(action.actnPlayer === this.playerNumber){
+            this.actionQueue.push({actnName:'restore',actnPlayer: this.playerNumber,actnRunner:'client',actnValue:card})
+          } else{
+            this.actionQueue.push({actnName:'restore',actnPlayer: getOpponentNumber(this.playerNumber),actnRunner:'client',actnValue:card})
+          }
+        }
+        break;
+      case 'draw-cards':
+        for(let card of action.actnValue){
+          if(action.actnPlayer === this.playerNumber){
+            this.actionQueue.push({actnName:'draw',actnPlayer: this.playerNumber,actnRunner:'client',actnValue:card})
+          } else{
+            this.actionQueue.push({actnName:'draw',actnPlayer: getOpponentNumber(this.playerNumber),actnRunner:'client',actnValue:card})
+          }
+        }
+        break;
       // case 'draw':
       //   console.log("DRAW");
       //   this.drawAction(actnTarget);
-      //   break;
-      // case 'shuffle-deck':
-      //   let deck = action.actnDeck || undefined;
-      //   this.shuffleDeckAction(actnTarget,deck);
       //   break;
       // case 'restore':
       //   this.restoreAction(actnTarget);
@@ -344,90 +379,21 @@ class Game {
     }
   }
 
-  /**----------------------------------------------------------------------------------
-   * ----------------------------------------------------------------------------------
-   * ----------     UPDATE PHASE ACTION        ----------------------------------------
-   * ----------------------------------------------------------------------------------
-   * Handles the actions that specifically change which phase of the game it is
-   * ----------------------------------------------------------------------------------
-   * @param {String}  phase   Current Game Phase
-   * @param {Number}  player  Number of the Current Player
-   * --------------------------------------------------------------------------------*/
-  updatePhaseAction(phase,player){
-    logNote("Player "+player+" - "+phase);
-    this.currentPhase = phase;
-    this.showPhase(phase,player);
-    switch(this.currentPhase){
-      case 'setup':
-        if(player === 1){
-          if(this.playerNumber === 1){
-            let loadActions = [{actnName:'load-deck',actnTarget:'player'},{actnName:'shuffle-deck',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'update-phase',actnPhase:'begin-game',actnPlayer:2}];
-            this.actionQueue.push(...loadActions);
-          } else{
-            console.log("WHEN DOES THIS HAPPEN?");
-            this.server.sendMessage({actnName:'update-phase',actnPhase:phase,actnPlayer:player});
-          }
-        } else{
-          if(this.playerNumber === 2){
-            this.server.sendMessage({actnName:'update-phase',actnPhase:phase,actnPlayer:player});
-            let loadActions = [{actnName:'load-deck',actnTarget:'player'},{actnName:'shuffle-deck',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'draw',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'restore',actnTarget:'player'},{actnName:'update-phase',actnPhase:'setup',actnPlayer:1}];
-            this.actionQueue.push(...loadActions);
-          }
-        }
-        break;
-      case 'begin-game':
-        this.currentPlayer = player;
-        if(this.playerNumber !== player){
-          this.server.sendMessage({actnName:'update-phase',actnPhase:'begin-game',actnPlayer:player});
-        } else{
-          setTimeout(()=>{this.actionQueue.push({actnName:'update-phase',actnPhase:'unsuspend',actnPlayer:this.playerNumber});},2000);
-        }
-        break;
-      case 'unsuspend':
-        console.log("SKIP FOR NOW...");
-        if(this.playerNumber === player){
-          this.server.sendMessage({actnName:'update-phase',actnPhase:'unsuspend',actnPlayer:player});
-          setTimeout(()=>{this.actionQueue.push({actnName:'update-phase',actnPhase:'draw',actnPlayer:this.playerNumber})},1000);
-        }
-        break;
-      case 'draw':
-        if(this.playerNumber === player){
-          this.actionQueue.push({actnName:'draw',actnTarget:'player'});
-          this.server.sendMessage({actnName:'update-phase',actnPhase:'draw',actnPlayer:player});
-          setTimeout(()=>{this.actionQueue.push({actnName:'update-phase',actnPhase:'breeding',actnPlayer:this.playerNumber})},2000);
-        }
-        break;
-      case 'breeding':
-        if(this.playerNumber === player){
-          this.server.sendMessage({actnName:'update-phase',actnPhase:'breeding',actnPlayer:player});
-          // this._allowAction = true;
-          if(this.playerBreeding.currentBreeding !== null){
-            let cb = this.playerBreeding.currentBreeding.cardNumber;
-            console.log("CB = ",cb);
-            let db = cardsDB[getCardSet(cb)][getCardNumber(cb)];
-            if(db.level === 2){
-              setTimeout(()=>{this.actionQueue.push({actnName:'update-phase',actnPhase:'main',actnPlayer:this.playerNumber})},1000);
-            }
-          }
-        }
-        break;
-      case 'main':
-        // Attach Event Listeners to Cards
-        if(this.playerNumber === player){
-          this.attachHandEventListeners();
-        }
-        break;
-      case 'end':
-        if(this.playerNumber === player){
-          this.server.sendMessage({actnName:'update-phase',actnPhase:'end',actnPlayer:player});
-          this.currentPlayer = this.currentPlayer === 2 ? 1 : 2;
-        } else{
-          setTimeout(()=>{
-            this.currentPlayer = this.currentPlayer === 2 ? 1 : 2;
-            this.actionQueue.push({actnName:'update-phase',actnPhase:'unsuspend',actnPlayer:this.playerNumber})
-          },2000);
-        }
-        break;
+  runClientAction(action){
+    if(action.actnRunner === 'server'){
+      this.server.sendMessage(this.actionQueue[0]);
+    } else{
+      switch(action.actnName){
+        case 'restore':
+          this.restoreAction(action.actnPlayer, action.actnValue);
+          break;
+        case 'draw':
+          this.drawAction(action.actnPlayer, action.actnValue);
+          break;
+        default:
+          logWarning('Action not found on Client...');
+          break;
+      }
     }
   }
 

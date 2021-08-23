@@ -12,4 +12,8 @@ function generateId(){
   return Date.now().toString(36) + Math.random().toString(36).substr(2)
 }
 
-module.exports = {sendAll, generateId}
+function getOpponentNumber(playerNo){
+  return playerNo === 1 ? 2 : 1;
+}
+
+module.exports = {sendAll, generateId, getOpponentNumber}

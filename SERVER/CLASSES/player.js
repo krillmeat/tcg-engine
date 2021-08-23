@@ -1,11 +1,14 @@
+const Hand = require('./hand');
+const Security = require('./security');
+
 class Player {
   constructor(username){
     this._username = username;
     this._deck = [];
     this._breedingDeck = [];
     this._breedingDgmn = undefined;
-    this._hand = [];
-    this._security = [];
+    this._hand = new Hand();
+    this._security = new Security();
     this._battlefieldDgmn = [];
     this._tamers = [];
   }

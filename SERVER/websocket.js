@@ -5,12 +5,14 @@ const loadDeckAction = require("./ACTIONS/load-deck-action.js");
 const loadBreedingDeckAction = require("./ACTIONS/load-breeding-deck-action.js");
 const shuffleDecksAction = require("./ACTIONS/shuffle-decks-action.js");
 const setupAction = require("./ACTIONS/setup-action.js");
+const endPhaseAction = require("./ACTIONS/end-phase-action.js");
 
 var express = require('express');
 var app = express();
 const path = require('path');
 var http = require('http').createServer(app);
 const WebSocket = require('ws');
+const unsuspendPhaseAction = require("./ACTIONS/unsuspend-phase-action.js");
 
 // const mysql = require('mysql');
 
@@ -104,6 +106,12 @@ const actionHandler = (action, lobby, ws) =>{
       LOBBIES[0].GAME_STATE.firstPlayer = action.actnPlayer;
       LOBBIES[0].GAME_STATE.currentPlayer = action.actnPlayer;
       setupAction(action, lobby, ws);
+      break;
+    case 'unsuspend-phase':
+      unsuspendPhaseAction(action,lobby,ws);
+      break;
+    case 'phase-complete':
+      endPhaseAction(action, lobby, ws);
       break;
     case 'done':
       // TODO - Create Done Action
