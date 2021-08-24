@@ -1,0 +1,43 @@
+.breeding-zone{
+  width: 100%;
+  border: 2px solid #FFF;
+  padding: 8px;
+  margin-top: 2vh;
+}
+
+#player-breeding,
+#opponent-breeding{
+  display: flex;
+    justify-content: space-between;
+    align-items: center;
+  width: 100%;
+}
+
+#opponent-field .breeding-zone{
+  transform: scale(.75);
+  top: 164px;
+  left: 20px;
+}
+
+#opponent-field .breeding-zone .breeding-deck{
+  transform: rotate(180deg);
+}
+
+.breeding-zone img{
+  width: 50%;
+}
+
+#opponent-field .breeding-zone .current-breeding{
+  margin-right: 4px;
+  transform: rotate(180deg);
+}
+
+.breeding-zone .current-breeding.focus{
+  animation: pulse 2s linear 0s infinite;
+}
+
+@keyframes pulse{
+  0%{opacity: 1}
+  50%{opacity: 0}
+  100%{opacity: 1}
+}

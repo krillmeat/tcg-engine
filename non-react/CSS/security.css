@@ -1,0 +1,38 @@
+.security-zone{
+  border: 2px solid #FFF;
+  width: 100%;
+  padding: 8px;
+}
+
+#player-field .security-zone{
+  top: 48px;
+}
+
+.security-zone ul{
+  display: flex;
+    justify-content: flex-start;
+}
+
+.security-zone .card{
+  width: 8vw;
+  margin: 0px;
+  margin-right: 4px;
+  background-image: url('https://rossdanielconover.com/DGMN_CARDS/card-back.png') !important;
+  background-size: 100%;
+  box-shadow: -2px 0 4px 0 rgba(0,0,0,.15);
+}
+
+.security-zone .card:last-of-type{
+  margin-right: 0px;
+}
+
+.security-zone .card img{
+  width: 100%;
+  opacity: 0;
+}
+
+.security-zone .card:first-of-type{ margin-left: 0px }
+
+#opponent-field .security-zone{
+  transform: rotate(180deg) scale(.75);
+}

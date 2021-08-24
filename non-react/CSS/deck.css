@@ -1,0 +1,34 @@
+.deck-zone{
+  width: 100%;
+}
+
+.deck{
+  position: relative;
+  padding: 8px;
+  border: 2px solid #FFF;
+    border-radius: 3px;
+}
+
+.deck img{
+  width: 100%;
+}
+
+.deck .deck-count{
+  font-family: 'Share Tech Mono',monospace;
+  position: absolute;
+  top: 64px; left: 44px;
+  min-width: 40px; height: 40px;
+  background: white;
+  border-radius: 50%;
+  padding: 9px;
+  font-size: 2.25em;
+  text-align: center;
+}
+
+#opponent-field .deck-zone{
+  transform: rotate(180deg);
+}
+
+#opponent-field .deck-zone .deck{
+  border: 2px solid #37446A;
+}

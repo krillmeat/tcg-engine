@@ -1,0 +1,16 @@
+.hand-zone{
+  width: 100vw; height: 15vh;
+  position: absolute;
+  bottom: 0px; right: 0px;
+  padding: 16px;
+  z-index: 999;
+}
+
+.hand-zone .hand{
+  display: flex;
+    justify-content: flex-end;
+}
+
+#player-hand .hand-zone .card:hover{
+  transform: translateY(-12vh);
+}

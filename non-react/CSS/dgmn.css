@@ -1,0 +1,25 @@
+.dgmn{
+  position: relative;
+  width: 112px;
+}
+
+.battle-zone .dgmn{
+  margin: 0 8px;
+}
+
+.dgmn img{
+  width: 100%;
+  border-radius: 3px;
+}
+
+#opponent-field .dgmn img{ transform: rotate(180deg)}
+
+.dgmn .dp{
+  position: absolute;
+  right: 5px;
+  bottom: 2px;
+  font-family: 'Share Tech Mono';
+  color: #FFF;
+  font-size: 2.5em;
+  text-align: right;
+}

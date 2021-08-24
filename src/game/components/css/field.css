@@ -20,19 +20,136 @@
   transform: rotate(180deg);
 }
 
-.deck-zone{
+.deck-trash-area{
   position: absolute;
-    top: 32px; right: 32px;
-  border: 1px solid black;
-    border-radius: 3px;
+  top: 32px; right: 32px;
 }
 
-.deck-zone button{
+.trash-zone{
+  padding: 16px;
+  border: 1px solid black;
+    border-radius: 3px;
+    margin-top: 16px;
+}
+
+.trash-zone button{
+  width: 100px; height: 140px;
   background: none;
   border: none;
+}
+
+.memory-track{
+  position: absolute;
+  top: calc(50vh - 32px);
+  left: calc(50vw - 440px);
+}
+
+.memory-track ul{
+  display: flex;
+  list-style: none;
+  justify-content: space-between;
+}
+
+.memory-track ul li{
+  width: 32px;
+  height: 32px;
+  border: 1px solid black;
+  border-radius: 50%;
+  text-align: center;
+  padding-top: 6px;
+  margin: 0 4px;
+  background: pink;
+}
+
+.memory-track ul li:nth-of-type(n+12){
+  transform: rotate(180deg);
+}
+
+.hand-zone{
+  display: flex;
+    justify-content: center;
+  width: 100%; height: 15vh;
+  position: absolute;
+  bottom: 0px; left: 0px;
+  padding: 16px;
+}
+
+.hand-zone .card{
+  position: relative;
+  height: 200%;
+  transition: transform .2s linear;
+  margin: 0 4px;
+}
+
+.bottom-player .hand-zone .card:hover{
+  transform: translateY(-12vh);
+}
+
+.hand-zone img{
+  height: 100%;
+}
+
+.top-player .hand-zone .card{
+  height: 150%;
+  transform: translateY(4vh);
+}
+
+.top-player .hand-zone .card::after{
+  content: '';
+  position: absolute;
+  top: 0px; left: 0px;
+  width: 100%; height: 100%;
+  /* background-image: url(https://i.imgur.com/kamvqMm.png); */
+  background-size: cover;
+  /* transform: rotate(180deg); */
+}
+
+.breeding-zone{
+  position: absolute;
+  bottom: 32px; left: 32px;
+  display: flex;
+    justify-content: space-between;
+  padding: 8px;
+  border: 1px solid black;
+}
+
+.breeding-zone button{
+  background: none;
   padding: 8px;
 }
 
-.deck-zone img{
-  width: 125px; height: 175px;
+.breeding-zone button img{
+  width: 100px;
+}
+
+.breeding-zone .current-raising{
+  padding: 8px;
+}
+
+.breeding-zone .current-raising img{
+  width: 100px; height: 140px;
+}
+
+.security-zone{
+  position: absolute;
+  top: 32px; left: 32px;
+}
+
+.security-zone ul{
+  padding-left: 0;
+  display: flex;
+  list-style: none;
+}
+
+.security-zone ul li{
+  width: 100px;
+  margin-left: -75px;
+}
+
+.security-zone ul li:first-of-type{
+  margin-left: 0px;
+}
+
+.security-zone ul li img{
+  width: 100%;
 }

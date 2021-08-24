@@ -1,0 +1,44 @@
+.card{
+  width: 150px;
+  margin: 0 8px;
+
+  background-size: 100%;
+
+  border-radius: 5%;
+  box-shadow: 0 -2px 8px 0 rgba(0,0,0,.25);
+}
+
+.hand .card{
+  animation: slideInPlayerHand .2s linear 0s 1;
+}
+
+.hand .card img{
+  width: 100%;
+}
+
+@keyframes slideInPlayerHand{
+  0%{transform: translateY(100px)}
+  100%{transform: translateY(0px)}
+}
+
+#player-hand .card.triage,
+#player-hand .card:hover{
+  transform: translateY(-105px);
+}
+
+#opponent-hand .card{ 
+  width: 100px;
+  height: 140px;
+  transform: translateY(72px);
+  background-image: url('https://rossdanielconover.com/DGMN_CARDS/card-back.png') !important ;
+  animation: slideInOpponentHand .2s linear 0s 1;
+}
+
+#opponent-hand .card img{
+  opacity: 0;
+}
+
+@keyframes slideInOpponentHand{
+  0%{transform: translateY(100px)}
+  100%{transform: translateY(72px)}
+}
