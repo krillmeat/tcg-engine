@@ -1,6 +1,15 @@
 const BreedingDeck = require('../CLASSES/breeding-deck.js');
 const Card = require('../CLASSES/card.js');
 
+/**----------------------------------------------------------------------------------
+ * LOAD BREEDING DECK ACTION
+ * ----------------------------------------------------------------------------------
+ * Action for creating a Breeding Deck from a Decklist
+ * ----------------------------------------------------------------------------------
+ * @param {Object}    action  Message from the Client 
+ * @param {Object}    LOBBY   LOBBY Object
+ * @param {WebSocket} ws      WebSocket Connection for Client
+ *----------------------------------------------------------------------------------*/
 const loadBreedingDeckAction = (action, LOBBY, ws) => {
   let deckList = action.actnValue[1];
   let playerNumber = action.actnPlayer;

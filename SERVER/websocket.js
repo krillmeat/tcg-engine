@@ -30,6 +30,8 @@ let webSocketServer = new WebSocket.Server({server: http}); // Make a WebSocket 
 
 let LOBBIES = []; // For the future, when I want to be able to have multiple lobbies at a time
 
+// WebSocket Connection
+
 webSocketServer.on('connection', function(ws){
 
   if(LOBBIES.length === 0){
@@ -53,12 +55,6 @@ webSocketServer.on('connection', function(ws){
   });
 });
 
-const sendAll = (lobby, message, sender) => {
-  for(var i=0; i<lobby.CLIENTS.length;i++){
-    if(lobby.CLIENTS[i] !== sender) lobby.CLIENTS[i].send(message);
-  }
-}
-
 // DATABASE
 // var connection;
 
@@ -79,14 +75,15 @@ const sendAll = (lobby, message, sender) => {
 // connectToDB("rossdani_tcgAdmin","");
 
 
-// SOME METHODS (LEARN HOW TO SPLIT THESE OUT)
-
-
-
-
-
-
-// ACTION HANDLER
+/**----------------------------------------------------------------------------------
+ * ACTION HANDLER
+ * ----------------------------------------------------------------------------------
+ * Checks incoming Messages, and runs the corresponding Action
+ * ----------------------------------------------------------------------------------
+ * @param {Object}    action  The message from the Client
+ * @param {Object}    lobby   The LOBBY the game is in
+ * @param {WebSocket} ws      The Client's WebSocket connection
+ *---------------------------------------------------------------------------------*/
 const actionHandler = (action, lobby, ws) =>{
   let actnName = action.actnName;
   switch(actnName){
