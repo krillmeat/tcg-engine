@@ -41,3 +41,8 @@
   50%{opacity: 0}
   100%{opacity: 1}
 }
+
+
+#player-breeding.actionable img.breeding-deck{
+  box-shadow: 0 0 0 2px yellow;
+}

@@ -1,5 +1,7 @@
-function logNote(message){
-  if(showNotes) console.log(`%c ${message}`,'color: #75715E')
+function logNote(message,object){
+  if(showNotes) {
+    object ? console.log(`%c ${message}%o`,'color: #75715E',object) : console.log(`%c ${message}`,'color: #75715E')
+  }
 }
 
 function logWarning(message){

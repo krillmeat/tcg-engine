@@ -11,7 +11,7 @@ const Card = require('../CLASSES/card.js');
  * @param {WebSocket} ws      WebSocket Connection for Client
  *----------------------------------------------------------------------------------*/
 const loadBreedingDeckAction = (action, LOBBY, ws) => {
-  let deckList = action.actnValue[1];
+  let deckList = action.actnValue[0];
   let playerNumber = action.actnPlayer;
 
   LOBBY.GAME_STATE.players[playerNumber-1].breedingDeck = buildBreedingDeck(deckList);
