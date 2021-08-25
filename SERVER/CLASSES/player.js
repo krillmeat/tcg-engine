@@ -1,5 +1,6 @@
 const Hand = require('./hand');
 const Security = require('./security');
+const Dgmn = require('./dgmn.js')
 
 class Player {
   constructor(username){

@@ -32,8 +32,13 @@ const endPhaseAction = (action, LOBBY, ws) => {
         break;
       case 'unsuspend':
         LOBBY.GAME_STATE.currentPhase = 'breeding';
-        mockAction = {actnName: 'breeding-phase', actnPlayer: player, actnRunner: 'server'};
+        mockAction = {actnName: 'breeding-phase', actnPlayer: player, actnRunner: 'server', actnValue:'start'};
         breedingPhaseAction(mockAction, LOBBY, ws);
+        break;
+      case 'breeding':
+        LOBBY.GAME_STATE.currentPhase = 'main';
+        mockAction = {actnName: 'main-phase', actnPlayer: player, actnRunner: 'server'};
+        mainPhaseAction(mockAction, LOBBY, ws);
         break;
       default:
         console.log("End Phase Action not Found...");
@@ -47,3 +52,4 @@ module.exports = endPhaseAction;
 //   endPhaseAction -> unsuspendPhaseAction -> endPhaseAction
 const breedingPhaseAction = require("./breeding-phase-action.js");
 const unsuspendPhaseAction = require("./unsuspend-phase-action.js");
+const mainPhaseAction = require("./main-phase-action.js");

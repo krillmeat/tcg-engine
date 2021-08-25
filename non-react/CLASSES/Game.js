@@ -40,8 +40,6 @@ class Game {
 
     this._actionQueue = [];
 
-    this.setEventListeners();
-
     this._gameTimerCounter = 0;
     this._gameTimer = setInterval(()=>{
       if(this.actionQueue.length > 0){
@@ -51,7 +49,7 @@ class Game {
       } else{
         this._gameTimerCounter++;
         if(this._gameTimerCounter %16 === 0) this.runAction({actnName:'server-tap'});
-        if(this._gameTimerCounter %32 === 0) this.runAction({actnName:'state-update'});
+        // if(this._gameTimerCounter %32 === 0) this.runAction({actnName:'state-update'});
       }
     }, 500);
 
@@ -103,53 +101,21 @@ class Game {
     player === this.playerNumber ? this.playerSecurityElem.appendChild(newCardElem) : this.opponentSecurityElem.appendChild(newCardElem);
   }
 
-  // loadDeckAction(target, deckCards){
-  //   console.log("Loaded Deck - "+target+" = ",this[target+'Deck'].cards);
-  //   console.log("Hand ? ",this[target+'Hand'].cards);
-  //   if(deckCards){
-  //     this[target+'Deck'].cards = this[target+'Deck'].cloneDeck(deckCards);
-  //   } else{
-  //     this[target+'Deck'].cards = this[target+'Deck'].createDeck(this[target+'Deck'].decklist);
-  //     if(target === 'player') this.server.sendMessage({actnName:'load-deck',actnTarget:'opponent',actionDeckCards:this[target+'Deck'].cards})
-  //   }
-  // }
+  hatchAction(player, dgmn){
+    let newDgmnElem = document.createElement("div");
+        newDgmnElem.classList.add("dgmn");
+        newDgmnElem.dataset.dgmnId = dgmn._dgmnId;
+        newDgmnElem.innerHTML = `<img src='https://rossdanielconover.com/DGMN_CARDS/DGMN/${getCardSet(dgmn._cardNumber)}/${dgmn._cardNumber}.png'/>`;
 
-  // shuffleDeckAction(target, preShuffled){
-  //   // You want to make sure both players get the same shuffle, so send the shuffle in action
-  //   if(preShuffled){
-  //     for(let i = 0; i < this[target+'Deck'].cards.length; i++){
-  //       this[target+'Deck'].cards[i].cardNumber = preShuffled[i];
-  //     }
-  //   } else{
-  //     this[target+'Deck'].shuffle();
-  //     this[target+'Deck'].shuffle();
-
-  //     let shuffledCardList = [];
-  //     for(let i = 0; i < this[target+'Deck'].cards.length; i++){
-  //       shuffledCardList.push(this[target+'Deck'].cards[i].cardNumber);
-  //     }
-  //     if(target === 'player') this.server.sendMessage({actnName:'shuffle-deck',actnTarget:'opponent',actnDeck:shuffledCardList})
-  //   }
-  // }
-
-  /**----------------------------------------------------------------------------------
-   * HATCH ACTION
-   * ----------------------------------------------------------------------------------
-   * Hatches an Egg from the Breeding Deck into the Raising Zone
-   * ----------------------------------------------------------------------------------
-   * @param {String} target 'player' or 'opponent'
-   * --------------------------------------------------------------------------------*/
-  // hatchAction(target,dgmnId){
-  //   let hatched = this[target+'Breeding'].breedingDeck[0];
-  //   this[target+'Breeding'].breedingDeck.splice(0,1);
-  //   this[target+'Breeding'].currentBreeding = dgmnId ? new Dgmn(hatched.cardNumber,dgmnId) : new Dgmn(hatched.cardNumber);
-  //   this[target+'Breeding'].breedingDgmnElem.appendChild(this[target+'Breeding'].currentBreeding.elem);
-
-  //   if(target === 'player'){
-  //     this._server.sendMessage({actnName:'hatch',actnTarget:'opponent',actnDgmn:this[target+'Breeding'].currentBreeding.dgmnId});
-  //     setTimeout(()=>{this.actionQueue.push({actnName:'update-phase',actnPhase:'main',actnPlayer:this.playerNumber})},2000);
-  //   } 
-  // }
+    if(player === this.playerNumber) { 
+      document.getElementById('player-breeding').querySelector(".current-breeding").appendChild(newDgmnElem); 
+      setTimeout(() => {
+        this.server.sendMessage({actnName: 'phase-complete', actnPlayer: this.playerNumber, actnValue: 'breeding'})
+      },1000);
+    } else{
+      document.getElementById('opponent-breeding').querySelector(".current-breeding").appendChild(newDgmnElem);
+    }
+  }
 
   /**----------------------------------------------------------------------------------
    * PLAY TRIAGE ACTION
@@ -206,61 +172,58 @@ class Game {
     }
   }
 
-  playDigimonToBattlefieldAction(target,cardNumber,cardIndex){
-    let dgmnData = cardsDB[getCardSet(cardNumber)][getCardNumber(cardNumber)];
-
-    // TODO - Trigger On Play Actions
-
-    // Draw the Dgmn on the Field, and remove the card from your hand
-    this[target+'Battlefield'].dgmnList.push(new Dgmn(cardNumber));
-    this[target+'Battlefield'].elem.querySelector('.dgmn-zone').appendChild(this[target+'Battlefield'].dgmnList[this[target+'Battlefield'].dgmnList.length-1].elem);
-    this[target+'Hand'].cards.splice(cardIndex,1);
-    this[target+'Hand'].elem.removeChild(this[target+'Hand'].elem.querySelector(`li:nth-of-type(${cardIndex+1})`));
-
-    // Memory Cost Stuff
-    let memoryMod = target === 'player' ? dgmnData.cost : -1 * dgmnData.cost;
-    this._memoryGauge.updateMemory(memoryMod);
-
-    if(target === 'player'){
-       this.server.sendMessage( {actnName:'play-digimon-to-battlefield',actnTarget:'opponent',actnCardNumber:cardNumber,actnCardIndex:cardIndex} );
-       if(this.isTurnOver()){
-         this.removeHandEvents();
-         setTimeout(() => {this.actionQueue.push( {actnName:'update-phase',actnPhase:'end',actnPlayer:this.playerNumber} ); },2000);
-       }
-    }
-  }
-
-  evolveBreedingDigimonAction(target,cardNumber,evolvedFrom,cardIndex){
-
-    console.log("EVOLVING A DGMN = ",evolvedFrom);
-
-    this[target+'Hand'].cards.splice(cardIndex,1);
-    this[target+'Hand'].elem.removeChild(this[target+'Hand'].elem.querySelector(`li:nth-of-type(${cardIndex+1})`));
-
-    evolvedFrom.evolveDgmn(target, cardNumber);
-
-    if(target === 'player'){
-      this.server.sendMessage( {actnName: 'evolve-breeding-dgmn',actnTarget:'opponent',actnEvolvedFrom:evolvedFrom,actnCardNumber:cardNumber,actnCardIndex:cardIndex})
-      if(this.isTurnOver()){
-        this.removeHandEvents();
-        setTimeout(() => {this.actionQueue.push( {actnName:'update-phase',actnPhase:'end',actnPlayer:this.playerNumber} ); },2000);
+  /**----------------------------------------------------------------------------------
+   * HANDLE PHASE
+   * ----------------------------------------------------------------------------------
+   * When a Phase Begins, should properly get the Client set up
+   * ----------------------------------------------------------------------------------
+   * @param {String} phase  The current Phase to set up
+   * @param {Number} player The player whose Phase it is
+   * --------------------------------------------------------------------------------*/
+  handlePhase(phase,player,data){
+    if(player === this.playerNumber){
+      if(phase === 'breeding'){
+        this.setupBreedingPhase(data);
       }
     }
   }
 
-  isTurnOver(){
-    return this._memoryGauge.memory < 0
-  }
+  /**----------------------------------------------------------------------------------
+   * SETUP BREEDING PHASE
+   * ----------------------------------------------------------------------------------
+   * Get the Player ready for the Breeding Phase
+   * --------------------------------------------------------------------------------*/
+  setupBreedingPhase(breedingData){
+    let breedingDeck = breedingData.deck;
+    let breedingDgmn = breedingData.breedingDgmn;
 
-  removeHandEvents(){
-    let cardElems = document.getElementById('player-hand').querySelectorAll("li");
-    for(let i = 0; i < cardElems.length; i++){
-      cardElems[i].replaceWith(cardElems[i].cloneNode(true));
+    // Show a skip button
+
+    if(!breedingDgmn){
+      logNote("No current DGMN in the Breeding Zone, only option is hatch...");
+      let breedingDeckElem = document.getElementById("player-breeding");
+          breedingDeckElem.classList.add("actionable");
+     
+      // Event Handler
+      let _handler = (hatchCard) => {
+
+        this.server.sendMessage({
+          actnName: 'breeding-phase',
+          actnPlayer: this.playerNumber,
+          actnRunner: 'server',
+          actnValue: 'hatch'
+        });
+        
+      }; let _binder = function(){ _handler(breedingDeck._cards[0]);
+        breedingDeckElem.classList.remove("actionable");
+        breedingDeckElem.removeEventListener("click",_binder,false); }.bind(this);
+
+      breedingDeckElem.addEventListener("click", _binder, false);
+    } else{
+      logNote("DGMN currently in Breeding Zone, only option is promote...");
+
+      // Promote Event
     }
-  }
-
-  removeAllFocuses(){
-
   }
 
   /**----------------------------------------------------------------------------------
@@ -308,7 +271,7 @@ class Game {
         // TODO - Show a cute deck animation
         logNote("DECKS SHUFFLED");
 
-        // TODO - HAVE PLAYERS PLAYER RPS TO DETERMINE WHO'S UP FIRST (TIE TURNS INTO A COIN FLIP)
+        // TODO - HAVE PLAYERS PLAY RPS TO DETERMINE WHO'S UP FIRST (TIE TURNS INTO A COIN FLIP)
         // Until then...
         if(this.playerNumber === 1 ){
           let winner = 1;
@@ -323,6 +286,7 @@ class Game {
         logNote(`Player ${action.actnPlayer} - ${action.actnValue} Phase`);
         this.currentPhase = action.actnValue;
         this.showPhase(action.actnValue,action.actnPlayer);
+        action.actnData ? this.handlePhase(action.actnValue,action.actnPlayer,action.actnData) : this.handlePhase(action.actnValue,action.actnPlayer);
         break;
       case 'restore-security':
         for(let card of action.actnValue){
@@ -342,34 +306,13 @@ class Game {
           }
         }
         break;
-      // case 'draw':
-      //   console.log("DRAW");
-      //   this.drawAction(actnTarget);
-      //   break;
-      // case 'restore':
-      //   this.restoreAction(actnTarget);
-      //   break;
-      // case 'server-tap':
-      //   this._server.sendMessage({actnName:'server-tap'});
-      //   break;
-      // case 'update-phase':
-      //   this.updatePhaseAction(action.actnPhase,action.actnPlayer);
-      //   break;
-      // case 'hatch':
-      //   this.hatchAction(action.actnTarget,action.actnDgmn);
-      //   break;
-      // case 'play-triage':
-      //   this.playTriageAction(action.actnTarget,action.actnCardNumber,action.actnCardIndex);
-      //   break;
-      // case 'play-digimon-to-battlefield':
-      //   this.playDigimonToBattlefieldAction(action.actnTarget,action.actnCardNumber,action.actnCardIndex);
-      //   break;
-      // case 'evolve-breeding-dgmn':
-      //   this.evolveBreedingDigimonAction(action.actnTarget,action.actnCardNumber,action.actnEvolvedFrom,action.actnCardIndex);
-      //   break;
-      // case 'server-tap':
-      //   this.server.sendMessage({actnName:'server-tap'});
-      //   break;
+      case 'hatch-dgmn':
+        if(action.actnPlayer === this.playerNumber){
+          this.actionQueue.push({actnName:'hatch', actnPlayer: this.playerNumber, actnRunner: 'client', actnData: action.actnData})
+        } else{
+          this.actionQueue.push({actnName:'hatch', actnPlayer: getOpponentNumber(this.playerNumber), actnRunner: 'client', actnData: action.actnData})
+        }
+        break;
       case 'reject-connection':
         serverLog("Connection Rejected => ",action.actnMessage);
         break;
@@ -389,6 +332,9 @@ class Game {
           break;
         case 'draw':
           this.drawAction(action.actnPlayer, action.actnValue);
+          break;
+        case 'hatch':
+          this.hatchAction(action.actnPlayer, action.actnData);
           break;
         default:
           logWarning('Action not found on Client...');
@@ -436,12 +382,6 @@ class Game {
    * ----------     EVENT LISTENERS                 -----------------------------------
    * ----------------------------------------------------------------------------------
    * --------------------------------------------------------------------------------*/
-
-  setEventListeners(){
-    this.playerBreeding.breedingDeckElem.addEventListener('click',(e)=>{
-      this.playerBreeding.hatchTrigger(e,this.actionQueue,this.currentPhase === 'breeding',this.currentPlayer === this.playerNumber);
-    });
-  }
 
   attachHandEventListeners(){
     let cardElems = document.getElementById('player-hand').querySelectorAll("li");
