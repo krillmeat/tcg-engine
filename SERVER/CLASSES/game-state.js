@@ -7,6 +7,7 @@ class GameState {
     this._currentPlayer = 0;
     this._phase = 'prologue';
     this._firstPlayer = 0;
+    this._memory = 0;
   }
 
   /**----------------------------------------------------------------------------------
@@ -32,6 +33,9 @@ class GameState {
 
   get firstPlayer(){ return this._firstPlayer }
   set firstPlayer(newFirstPlayer){ this._firstPlayer = newFirstPlayer }
+
+  get memory(){ return this._memory }
+  set memory(newMemory){ this._memory = newMemory }
 };
 
 module.exports = GameState;

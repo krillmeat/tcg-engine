@@ -7,7 +7,10 @@ const mainPhaseAction = (action, LOBBY, ws) => {
   sendAll(LOBBY, JSON.stringify({
     actnName: 'update-phase',
       actnPlayer: player,
-      actnValue: 'main'
+      actnValue: 'main',
+      actnData: {
+        hand: LOBBY.GAME_STATE.players[player-1]._hand
+      }
   }))
 }
 

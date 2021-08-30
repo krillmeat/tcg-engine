@@ -14,3 +14,15 @@
 #player-hand .hand-zone .card:hover{
   transform: translateY(-12vh);
 }
+
+.hand.triage .card::after{
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,.5)
+}
+
+.hand.triage .card.triage::after{
+  display: none;
+}

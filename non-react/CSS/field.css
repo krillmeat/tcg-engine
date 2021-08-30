@@ -65,10 +65,8 @@
   height: 12vw;
 }
 
-.play-to-field.focus{
-  border: 2px solid #FFF;
-  opacity: 1;
-  animation: pulse 2s linear 0s infinite;
+.play-to-field.actionable{
+  box-shadow: 0 0 0 2px yellow;
 }
 
 .play-to-field.focus::after{
@@ -77,12 +75,6 @@
   text-align: center;
   position: absolute;
   top: 4vw;
-}
-
-@keyframes pulse{
-  0%{opacity: 1}
-  50%{opacity: 0}
-  100%{opacity: 1}
 }
 
 
@@ -123,7 +115,7 @@
   z-index: 999;
 }
 
-#memory-gauge ul li.pulse-focus{
+#memory-gauge ul li.delta{
   animation: pulse 1s linear 0s infinite;
   box-shadow: 0 0 0 4px rgb(33,45,79), 0 0 0 8px rgb(202, 205, 29);
 }

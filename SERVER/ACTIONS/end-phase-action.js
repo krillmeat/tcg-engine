@@ -31,6 +31,11 @@ const endPhaseAction = (action, LOBBY, ws) => {
         }
         break;
       case 'unsuspend':
+        LOBBY.GAME_STATE.currentPhase = 'draw';
+        mockAction = {actnName: 'draw-phase', actnPlayer: player, actnRunner: 'server'};
+        drawPhaseAction(mockAction, LOBBY, ws);
+        break;
+      case 'draw':
         LOBBY.GAME_STATE.currentPhase = 'breeding';
         mockAction = {actnName: 'breeding-phase', actnPlayer: player, actnRunner: 'server', actnValue:'start'};
         breedingPhaseAction(mockAction, LOBBY, ws);
@@ -53,3 +58,4 @@ module.exports = endPhaseAction;
 const breedingPhaseAction = require("./breeding-phase-action.js");
 const unsuspendPhaseAction = require("./unsuspend-phase-action.js");
 const mainPhaseAction = require("./main-phase-action.js");
+const drawPhaseAction = require("./draw-phase-action.js");

@@ -1,11 +1,16 @@
 class Game {
   constructor(username, ws){
+    
+    // SERVER VARIABLES
     this._server = ws || new Server(username);                                      // Object - The WebSocket Server
     this.server.ws.onopen = () => { this.onOpen() };                                // Func   - What happens when the connection to the WS is started
     this.server.ws.onmessage = message => { this.onMessage(message) };              // Func   - What happens when the WS receives a message from the server
     this.server.ws.onclose = () => { this.onClose() };                              // Func   - What happens when the connection to the WS is closed
 
     this._allowAction = false;                                                      // Bool   - Whether or not actions from the player are currently allowed (might be removed)
+    this._inPlayTriage = false;
+    this._currentTriageId = undefined;
+    this._playTriageCard = {};
 
     this._phaseMessage = document.querySelector(".phase-message");                  // HTML   - Message Element that pops up when the Phase changes
 
@@ -17,14 +22,14 @@ class Game {
     this._playerNumber = 0;                                                         // Number - Denotes the Player's Number (1 or 2)
 
     this._playerDeck;
-    this._playerHand = new Hand(getById('player-hand'));                            // Object - Player's Hand
-    this._playerSecurity = new Security(getById('player-security'));                // Object - Player's Security Stack
+    this._playerHand = new Hand(true,getById('player-hand'));                            // Object - Player's Hand
+    this._playerSecurity = new Security(true,getById('player-security'));                // Object - Player's Security Stack
     this._playerBreeding = new Breeding(getById('player-breeding'));                // Object - Player's Breeding Area
     this._playerBattleField = new Battlefield(getById('player-battlefield'));       // Object - Player's Battlefield
 
     this._opponentDeck;
-    this._opponentHand = new Hand(getById('opponent-hand'));                        // Object - Opponent's Hand
-    this._opponentSecurity = new Security(getById('opponent-security'));            // Object - Opponent's Security Stack
+    this._opponentHand = new Hand(false,getById('opponent-hand'));                        // Object - Opponent's Hand
+    this._opponentSecurity = new Security(false,getById('opponent-security'));            // Object - Opponent's Security Stack
     this._opponentBreeding = new Breeding(getById('opponent-breeding'));            // Object - Opponent's Breeding Area
     this._opponentBattlefield = new Battlefield(getById('opponent-battlefield'));   // Object - Opponent's Battlefield\
 
@@ -35,71 +40,37 @@ class Game {
     this.playerSecurityElem = document.getElementById("player-security");
     this.opponentSecurityElem = document.getElementById("opponent-security");
 
+    this.eventListener = new EventListeners();
+    this.messenger = new Messenger();
+    this.clientRunner = new ClientRunner();
 
 
+  /**----------------------------------------------------------------------------------
+   * ----------     GAME TIMER                      -----------------------------------
+   * --------------------------------------------------------------------------------*/
 
     this._actionQueue = [];
 
     this._gameTimerCounter = 0;
     this._gameTimer = setInterval(()=>{
       if(this.actionQueue.length > 0){
-        // this.runAction(this.actionQueue[0]);
-        this.runClientAction(this.actionQueue[0]);
+        let nextAction = this.actionQueue[0];
+        if(nextAction.actnRunner === 'server'){
+          this.server.sendMessage(nextAction);
+        } else{
+          this.runClientAction(nextAction);
+        }
         this.actionQueue.splice(0,1);
       } else{
         this._gameTimerCounter++;
         if(this._gameTimerCounter %16 === 0) this.runAction({actnName:'server-tap'});
-        // if(this._gameTimerCounter %32 === 0) this.runAction({actnName:'state-update'});
       }
-    }, 500);
-
-    document.querySelector("button.start-button").addEventListener("click",e => {
-      this.playerDeck = new Deck(getById('player-deck'),0,starterDeckTwo[1]);
-      this.playerBreeding.breedingDeck = this.playerBreeding.buildDeck(starterDeckTwo[0]);
-      this.opponentDeck = new Deck(getById('opponent-deck'),0,starterDeckOne[1]);
-      this.opponentBreeding.breedingDeck = this.opponentBreeding.buildDeck(starterDeckOne[0]);
-      // this.setupPhaseAction(this.playerNumber);
-      this.updatePhaseAction('setup',this.playerNumber);
-      e.target.style.top = "-1000px";
-    });
+    }, 250);
   }
 
-  drawAction(player, card){
-    let newCardElem = document.createElement("li");
-        newCardElem.classList.add("card");
-        newCardElem.dataset.cardId = card._cardId;
-
-    if(player === this.playerNumber){ // You are drawing
-
-      newCardElem.innerHTML = `<img src='https://rossdanielconover.com/DGMN_CARDS/CARDS/${getCardSet(card._cardNumber)}/${card._cardNumber}.png'/>`;
-      this.playerHandElem.appendChild(newCardElem);
-
-      // Drawing Ends Both the Setup and Draw Phases
-      if(this.currentPhase === 'setup'){
-        if(this.playerHandElem.querySelectorAll("li").length === 5){
-          setTimeout(() => {
-            this.server.sendMessage({actnName: 'phase-complete', actnPlayer: this.playerNumber, actnValue: 'setup'})
-          },1000);
-        }
-      } else if(this.currentPhase === 'draw'){
-        setTimeout(() => {
-          this.server.sendMessage({actnName: 'phase-complete', actnPlayer: this.playerNumber, actnValue: 'setup'})
-        },1000);
-      }
-    } else{ // Opponent is Drawing
-      newCardElem.innerHTML = "<img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/>";
-      this.opponentHandElem.appendChild(newCardElem);
-    }
-  }
-
-  restoreAction(player, card){
-    let newCardElem = document.createElement("li");
-        newCardElem.classList.add("card");
-        newCardElem.dataset.cardId = card._cardId;
-        newCardElem.innerHTML = `<img src='https://rossdanielconover.com/DGMN_CARDS/card-back.png'/>`;
-
-    player === this.playerNumber ? this.playerSecurityElem.appendChild(newCardElem) : this.opponentSecurityElem.appendChild(newCardElem);
-  }
+  /**----------------------------------------------------------------------------------
+   * ----------     ACTIONS                         -----------------------------------
+   * --------------------------------------------------------------------------------*/
 
   hatchAction(player, dgmn){
     let newDgmnElem = document.createElement("div");
@@ -172,6 +143,73 @@ class Game {
     }
   }
 
+
+  cardTriage(cardId){
+
+    this._currentTriageId = cardId;
+
+    this.server.sendMessage({
+      actnName: 'play-triage',
+      actnPlayer: this.playerNumber,
+      actnRunner: 'server',
+      actnValue: cardId
+    });
+    
+  }
+
+  activatePlayDgmnToField(cardData){
+    let playElem = document.getElementById('player-battlefield').querySelector(".play-to-field")
+    playElem.classList.add("actionable");
+
+    this.eventListener.createEventListener(playElem,"click","playToFieldClickEvent",this.playDgmnToFieldAction.bind(this));
+    this.eventListener.createEventListener(playElem,"mouseover","memoryDeltaHoverEvent",this.showMemoryDelta.bind(this));
+    this.eventListener.createEventListener(playElem,"mouseout","hideMemoryDeltaHoverEvent",this.hideMemoryDelta.bind(this));
+  }
+
+  deactivePlayDgmnToField(){
+    let playElem = document.getElementById('player-battlefield').querySelector(".play-to-field");
+    playElem.classList.remove("actionable");
+    this.hideMemoryDelta();
+    this.eventListener.removeEventListener(playElem,"click","playToFieldClickEvent");
+    this.eventListener.removeEventListener(playElem,"mouseover","memoryDeltaHoverEvent");
+    this.eventListener.removeEventListener(playElem,"mouseout","hideMemoryDeltaHoverEvent");
+  }
+
+  showMemoryDelta(){
+    let cost = this._playTriageCard.cost;
+    let memoryElem = document.getElementById("memory-gauge");
+    let memoryNumbers = memoryElem.querySelectorAll("li");
+
+    let currentIndex = 0;
+
+    for(let i = 0; i < memoryNumbers.length; i++){
+      if(memoryNumbers[i].classList.contains('current')){
+        currentIndex = i;
+      }
+    }
+
+    memoryElem.querySelectorAll("li")[ currentIndex + cost ].classList.add("delta");
+  }
+
+  hideMemoryDelta(){ document.getElementById("memory-gauge").querySelector(".delta").classList.remove("delta"); }
+
+  playDgmnToFieldAction(e){
+    
+    this.server.sendMessage({
+      actnName: 'play-dgmn-to-field',
+      actnPlayer: this.playerNumber,
+      actnRunner: 'server',
+      actnValue: this._currentTriageId
+    });
+
+    this.deactivePlayDgmnToField();
+    this._inPlayTriage = false;
+    this._currentTriageId = undefined;
+    this.playerHandElem.classList.remove("triage");
+    this.playerHandElem.querySelector(".card.triage").classList.remove("triage");
+
+  }
+
   /**----------------------------------------------------------------------------------
    * HANDLE PHASE
    * ----------------------------------------------------------------------------------
@@ -184,6 +222,8 @@ class Game {
     if(player === this.playerNumber){
       if(phase === 'breeding'){
         this.setupBreedingPhase(data);
+      } else if(phase === 'main'){
+        this.setupMainPhase(data);
       }
     }
   }
@@ -227,6 +267,41 @@ class Game {
   }
 
   /**----------------------------------------------------------------------------------
+   * SETUP MAIN PHASE
+   * ----------------------------------------------------------------------------------
+   * Get the Player ready for the Main Phase
+   * Sets up Hand Events
+   * --------------------------------------------------------------------------------*/
+  setupMainPhase(hand){
+    let obj = this;
+    logNote("Hand Data = ",hand);
+    let handCardElems = document.getElementById("player-hand").querySelectorAll("li"); // SWAP WITH CLASS-BASED LATER
+
+    let _handler = (e,handCardData) => {
+      if(!obj._inPlayTriage){
+        obj._inPlayTriage = true;
+        obj.playerHandElem.classList.add("triage");
+        e.currentTarget.classList.add("triage");
+
+        this.cardTriage(e.currentTarget.dataset.cardId);
+      } else if(obj._inPlayTriage && obj._currentTriageId === e.currentTarget.dataset.cardId ){ 
+        obj._inPlayTriage = false;
+        obj.playerHandElem.classList.remove("triage");
+        e.currentTarget.classList.remove("triage");
+        this._currentTriageId = undefined;
+        this._playTriageCard = {};
+        this.deactivePlayDgmnToField();
+       }
+    }; let _binder = function(e){ _handler(e,obj._inPlayTriage);
+      // handCardElem.removeEventListener("click",_binder,false) 
+    }.bind(obj);
+
+    for(let handCardElem of handCardElems){
+      handCardElem.addEventListener("click", _binder, false);
+    }
+  }
+
+  /**----------------------------------------------------------------------------------
    * ----------------------------------------------------------------------------------
    * ----------     RUN ACTION                 ----------------------------------------
    * ----------------------------------------------------------------------------------
@@ -244,7 +319,6 @@ class Game {
       case 'notify': // Nothing more than sending a message to the Client, no inherit Action to take
         break;
       case 'set-player-number':
-        this.playerNumber = action.actnValue;
         break;
       case 'players-ready':
         console.log("DISPLAY THE DECK SELECTOR"); // TODO - Actually prompt this, in the future...
@@ -269,7 +343,6 @@ class Game {
         break;
       case 'shuffle-decks':
         // TODO - Show a cute deck animation
-        logNote("DECKS SHUFFLED");
 
         // TODO - HAVE PLAYERS PLAY RPS TO DETERMINE WHO'S UP FIRST (TIE TURNS INTO A COIN FLIP)
         // Until then...
@@ -289,22 +362,8 @@ class Game {
         action.actnData ? this.handlePhase(action.actnValue,action.actnPlayer,action.actnData) : this.handlePhase(action.actnValue,action.actnPlayer);
         break;
       case 'restore-security':
-        for(let card of action.actnValue){
-          if(action.actnPlayer === this.playerNumber){
-            this.actionQueue.push({actnName:'restore',actnPlayer: this.playerNumber,actnRunner:'client',actnValue:card})
-          } else{
-            this.actionQueue.push({actnName:'restore',actnPlayer: getOpponentNumber(this.playerNumber),actnRunner:'client',actnValue:card})
-          }
-        }
         break;
       case 'draw-cards':
-        for(let card of action.actnValue){
-          if(action.actnPlayer === this.playerNumber){
-            this.actionQueue.push({actnName:'draw',actnPlayer: this.playerNumber,actnRunner:'client',actnValue:card})
-          } else{
-            this.actionQueue.push({actnName:'draw',actnPlayer: getOpponentNumber(this.playerNumber),actnRunner:'client',actnValue:card})
-          }
-        }
         break;
       case 'hatch-dgmn':
         if(action.actnPlayer === this.playerNumber){
@@ -312,6 +371,25 @@ class Game {
         } else{
           this.actionQueue.push({actnName:'hatch', actnPlayer: getOpponentNumber(this.playerNumber), actnRunner: 'client', actnData: action.actnData})
         }
+        break;
+      case 'activate':
+        if(action.actnValue === 'play-dgmn-to-field'){
+          this.activatePlayDgmnToField(action.actnData);
+        }
+        break;
+      case 'set-triage-card':
+        this._playTriageCard = action.actnData;
+        break;
+      case 'update-memory':
+        this._memoryGauge.elem.querySelector(".current").classList.remove("current");
+        if(this.playerNumber === 1){
+          this._memoryGauge.elem.querySelectorAll("li")[action.actnValue + 10].classList.add("current");
+        } else{
+          this._memoryGauge.elem.querySelectorAll("li")[( -1 * action.actnValue) + 10].classList.add("current");
+        }
+        break;
+      case 'add-dgmn-to-battlefield':
+        this.playerBattlefield.addDgmn(action.actnValue,action.actnData);
         break;
       case 'reject-connection':
         serverLog("Connection Rejected => ",action.actnMessage);
@@ -323,15 +401,24 @@ class Game {
   }
 
   runClientAction(action){
-    if(action.actnRunner === 'server'){
-      this.server.sendMessage(this.actionQueue[0]);
+
+    let runner = this.clientRunner.run(action);
+
+    if(runner.actor === 'game'){
+      this[runner.job](action);
+    } else if(runner.actor === 'messenger'){
+      this.messenger[runner.job](action);
     } else{
+      let target = action.actnPlayer === this.playerNumber ? 'player' : 'opponent';
+      // Fetches the actor and the job, and sets the Player Number, Data, Action Queue callback, and Event Listener callback
+      this[`_${target}${runner.actor}`][runner.job](action.actnData, action.actnPlayer, this._currentPhase, this.addToActionQueue.bind(this));
+    }
+
+    
       switch(action.actnName){
         case 'restore':
-          this.restoreAction(action.actnPlayer, action.actnValue);
           break;
         case 'draw':
-          this.drawAction(action.actnPlayer, action.actnValue);
           break;
         case 'hatch':
           this.hatchAction(action.actnPlayer, action.actnData);
@@ -340,8 +427,33 @@ class Game {
           logWarning('Action not found on Client...');
           break;
       }
-    }
+
   }
+
+  /**----------------------------------------------------------------------------------
+   * SET PLAYER NUMBER
+   * ----------------------------------------------------------------------------------
+   * Sets your Player Number to the correct value
+   * ----------------------------------------------------------------------------------
+   * @param {Object} data 
+   * --------------------------------------------------------------------------------*/
+  setPlayerNumber(data){
+    this.playerNumber = data.actnValue;
+    logDebug("Player Number set to ",data.actnValue);
+  }
+
+  /**----------------------------------------------------------------------------------
+   * ADD TO ACTION QUEUE
+   * ----------------------------------------------------------------------------------
+   * Adds an Action Item to the Action Queue, to be run
+   * ----------------------------------------------------------------------------------
+   * @param {Object} action 
+   * --------------------------------------------------------------------------------*/
+  addToActionQueue(action){
+    this._actionQueue.push(action);
+  }
+
+  // eventListenerActionHandler()
 
   /**----------------------------------------------------------------------------------
    * ----------------------------------------------------------------------------------
@@ -360,6 +472,17 @@ class Game {
   onMessage(message){
     let msg = JSON.parse(message.data);
 
+    let action = this.messenger.triage(msg);
+    if(action.actor === 'game'){
+      this[action.job](msg);
+    } else if(action.actor === 'messenger'){
+      this.messenger[action.job](msg);
+    } else{
+      let target = msg.actnPlayer === this.playerNumber ? 'player' : 'opponent';
+      // Fetches the actor and the job, and sets the Player Number, Data, Action Queue callback, and Event Listener callback
+      this[`_${target}${action.actor}`][action.job](msg.actnPlayer,msg.actnData,this.addToActionQueue.bind(this),this.eventListener);
+    }
+    
     this.runAction(msg);
   }
 
@@ -376,24 +499,6 @@ class Game {
     this.phaseMessage.classList.add('show');
     setTimeout(() => {this.phaseMessage.classList.remove('show')},2500);
   }
-
-  /**----------------------------------------------------------------------------------
-   * ----------------------------------------------------------------------------------
-   * ----------     EVENT LISTENERS                 -----------------------------------
-   * ----------------------------------------------------------------------------------
-   * --------------------------------------------------------------------------------*/
-
-  attachHandEventListeners(){
-    let cardElems = document.getElementById('player-hand').querySelectorAll("li");
-    for(let i = 0; i < cardElems.length; i++){
-      cardElems[i].addEventListener('click',(e) => {
-        console.log("HAND CHECK = ",this.playerHand.cards);
-        console.log("Index = ",i);
-        this.playerHand.matchCardElem(e.currentTarget.dataset.cardId).playTrigger(e,this.actionQueue,this.currentPhase === 'main',this.currentPlayer === this.playerNumber,getIndex(e.currentTarget));
-      });
-    }
-  }
-
 
   /**----------------------------------------------------------------------------------
    * ----------------------------------------------------------------------------------

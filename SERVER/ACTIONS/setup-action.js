@@ -4,8 +4,6 @@ const setupAction = (action, LOBBY, ws) => {
     let player = action.actnPlayer;
     LOBBY.GAME_STATE.phase = 'setup';
 
-    console.log("Setup for Player "+player);
-
     sendAll(LOBBY, JSON.stringify({
         actnName: 'update-phase',
         actnPlayer: player,
@@ -19,7 +17,7 @@ const setupAction = (action, LOBBY, ws) => {
     sendAll(LOBBY, JSON.stringify({
         actnName: 'restore-security',
         actnPlayer: player,
-        actnValue: securityCards,
+        actnData: securityCards,
         actnMessage: "Restoring Cards..."
     }));
 
@@ -30,7 +28,8 @@ const setupAction = (action, LOBBY, ws) => {
     sendAll(LOBBY, JSON.stringify({
         actnName: 'draw-cards',
         actnPlayer: player,
-        actnValue: drawnCards,
+        actnValue: 'setup-phase',
+        actnData: drawnCards,
         actnMessage: "Drawing Cards..."
     }));
 }

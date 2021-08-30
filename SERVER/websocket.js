@@ -6,6 +6,7 @@ const loadBreedingDeckAction = require("./ACTIONS/load-breeding-deck-action.js")
 const shuffleDecksAction = require("./ACTIONS/shuffle-decks-action.js");
 const setupAction = require("./ACTIONS/setup-action.js");
 const endPhaseAction = require("./ACTIONS/end-phase-action.js");
+const determineTriageAction = require('./ACTIONS/determine-triage-action.js');
 
 var express = require('express');
 var app = express();
@@ -14,6 +15,7 @@ var http = require('http').createServer(app);
 const WebSocket = require('ws');
 const unsuspendPhaseAction = require("./ACTIONS/unsuspend-phase-action.js");
 const breedingPhaseAction = require("./ACTIONS/breeding-phase-action.js");
+const playDgmnToFieldAction = require("./ACTIONS/play-dgmn-to-field-action.js");
 
 // const mysql = require('mysql');
 
@@ -113,6 +115,12 @@ const actionHandler = (action, lobby, ws) =>{
       break;
     case 'phase-complete':
       endPhaseAction(action, lobby, ws);
+      break;
+    case 'play-triage':
+      determineTriageAction(action, lobby, ws);
+      break;
+    case 'play-dgmn-to-field':
+      playDgmnToFieldAction(action, lobby, ws);
       break;
     case 'done':
       // TODO - Create Done Action

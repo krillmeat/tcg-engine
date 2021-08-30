@@ -123,6 +123,9 @@
   <script src="DB/deck.db.js"></script>
 
   <script src="CLASSES/Game.js"></script>
+  <script src="CLASSES/Messenger.js"></script>
+  <script src="CLASSES/Client-Runner.js"></script>
+  <script src="CLASSES/Event-Listeners.js"></script>
   <script src="CLASSES/Memory-Gauge.js"></script>
   <script src="CLASSES/Deck.js"></script>
   <script src="CLASSES/Hand.js"></script>
@@ -140,7 +143,8 @@
    const queryParams = SITE_URL.indexOf("?") !== -1 ? SITE_URL.substring(SITE_URL.indexOf("?")+1).split("&") : [];
 
    let showNotes = true;
-   let showDebug = queryParams[getParamIndex(queryParams,'debug')]?.split("=")[1] === 'true';
+  //  let showDebug = queryParams[getParamIndex(queryParams,'debug')]?.split("=")[1] === 'true';
+  let showDebug = true;
    logDebug(`Query Params = ${queryParams}`);
    logNote('Starting Game');
    let login = queryParams[getParamIndex(queryParams,'login')]?.split("=")[1];

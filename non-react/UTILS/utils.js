@@ -8,8 +8,10 @@ function logWarning(message){
   console.log(`%c ${message}`,'color: #E6DB74')
 }
 
-function logDebug(message){
-  if(showDebug) console.log(`%c ${message}`,'color: #A6E22E')
+function logDebug(message,object){
+  if(showDebug) {
+    object ? console.log(`%cDEBUG :: ${message}%o`,'color: #A6E22E',object) : console.log(`%c ${message}`,'color: #A6E22E');
+  }
 }
 
 function logServer(message,object){
@@ -48,4 +50,16 @@ function getCardSet(cardNumber){
 
 function getCardNumber(cardNumber){
   return parseInt(cardNumber.split("-")[1])-1;
+}
+
+function findIdInSet(type, list, id){
+  if(type === 'card'){
+    for(let item of list){
+      if(item._cardNumber === id){
+        return item;
+      }
+    }
+  }
+
+  return {};
 }

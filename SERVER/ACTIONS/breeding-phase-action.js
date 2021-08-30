@@ -31,7 +31,6 @@ const breedingPhaseAction = (action, LOBBY, ws) => {
     }));
    } else if(value === 'hatch'){
     let card = LOBBY.GAME_STATE.players[player-1].breedingDeck._cards[0];
-    console.log("Hatched Card Number = ",card);
     let hatchedDgmn = new Dgmn(card._cardNumber);
     LOBBY.GAME_STATE.players[player-1].breedingDgmn = hatchedDgmn;
     LOBBY.GAME_STATE.players[player-1].breedingDeck._cards.splice(0,1);
